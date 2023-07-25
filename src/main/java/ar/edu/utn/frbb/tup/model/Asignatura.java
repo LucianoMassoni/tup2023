@@ -5,7 +5,6 @@ import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import java.util.Optional;
 
 public class Asignatura {
-
     private Materia materia;
     private EstadoAsignatura estado;
     private Integer nota;
@@ -40,6 +39,11 @@ public class Asignatura {
     public Materia getMateria() {
         return materia;
     }
+
+    /*
+    * Aca terminan los getters y setters y empiezan las funciones que creo que deberian estar en la capa
+    * de servicio.
+    * */
 
     public void cursarAsignatura(){
         this.estado = EstadoAsignatura.CURSADA;

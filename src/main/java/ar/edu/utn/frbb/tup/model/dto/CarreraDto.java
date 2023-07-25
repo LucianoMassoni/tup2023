@@ -1,23 +1,22 @@
-package ar.edu.utn.frbb.tup.model;
+package ar.edu.utn.frbb.tup.model.dto;
+
+import ar.edu.utn.frbb.tup.model.Materia;
 
 import java.util.List;
 
-public class Carrera {
-    private final String nombre;
-    private int carreraId;
-    private int departamento;
-    private int cantidadCuatrimestres;
-    private List<Materia> materiasList;
-
-    public Carrera(String nombre, int carreraId, int departamento, int cantidadCuatrimestres) {
-        this.nombre = nombre;
-        this.carreraId = carreraId;
-        this. departamento = departamento;
-        this.cantidadCuatrimestres = cantidadCuatrimestres;
-    }
+public class CarreraDto {
+    String nombre;
+    int carreraId;
+    int departamento;
+    int cantidadCuatrimestres;
+    List<Materia> materiasList;
 
     public String getNombre() {
         return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public int getCarreraId() {
@@ -44,7 +43,11 @@ public class Carrera {
         this.cantidadCuatrimestres = cantidadCuatrimestres;
     }
 
-    public void agregarMateria(Materia materia) {
-        materiasList.add(materia);
+    public List<Materia> getMateriasList() {
+        return materiasList;
+    }
+
+    public void setMateriasList(List<Materia> materiasList) {
+        this.materiasList = materiasList;
     }
 }
