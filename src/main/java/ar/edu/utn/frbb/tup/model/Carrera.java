@@ -12,7 +12,7 @@ public class Carrera {
     public Carrera(String nombre, int carreraId, int departamento, int cantidadCuatrimestres) {
         this.nombre = nombre;
         this.carreraId = carreraId;
-        this. departamento = departamento;
+        this.departamento = departamento;
         this.cantidadCuatrimestres = cantidadCuatrimestres;
     }
 

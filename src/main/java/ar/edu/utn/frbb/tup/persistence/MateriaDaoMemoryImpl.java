@@ -5,6 +5,7 @@ import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -29,6 +30,10 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
             }
         }
         throw new MateriaNotFoundException("No se encontró la materia con id " + idMateria);
+    }
+
+    public Map<Integer, Materia> getAllMaterias(){
+        return repositorioMateria;
     }
 
 }

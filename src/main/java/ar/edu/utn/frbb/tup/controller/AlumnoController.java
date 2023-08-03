@@ -17,15 +17,26 @@ public class AlumnoController {
 
     @PostMapping("/")
     public Alumno crearAlumno(@RequestBody AlumnoDto alumnoDto) {
-
         return alumnoService.crearAlumno(alumnoDto);
-
     }
-    @GetMapping
+
+    @GetMapping("/buscar")
     public Alumno buscarAlumno(@RequestParam String apellido) {
 
        return alumnoService.buscarAlumno(apellido);
 
     }
+
+    @PostMapping
+    public Alumno actualizarAlumno(@RequestParam long dni){
+        return null;
+    }
+    //Funcion de prueba
+    @GetMapping
+    public Alumno cargarAlumno(@RequestParam long dni){
+        return alumnoService.cargarAlumno(dni);
+    }
+
+
 
 }

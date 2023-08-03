@@ -69,16 +69,6 @@ public class Alumno {
     * servicio y no en esta.
     * */
 
-    public void aprobarAsignatura(Materia materia, int nota) throws EstadoIncorrectoException, CorrelatividadException, AsignaturaInexistenteException {
-        Asignatura asignaturaAAprobar = getAsignaturaAAprobar(materia);
-
-        for (Materia correlativa :
-                materia.getCorrelatividades()) {
-            chequearCorrelatividad(correlativa);
-        }
-        asignaturaAAprobar.aprobarAsignatura(nota);
-    }
-
     private void chequearCorrelatividad(Materia correlativa) throws CorrelatividadException {
         for (Asignatura a:
                 asignaturas) {

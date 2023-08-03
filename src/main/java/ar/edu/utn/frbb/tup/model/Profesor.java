@@ -10,7 +10,6 @@ public class Profesor {
     private final String apellido;
     private final String titulo;
 
-    private List<Materia> materiasDictadas;
 
     public Profesor(String nombre, String apellido, String titulo) {
         this.apellido = apellido;
@@ -30,11 +29,4 @@ public class Profesor {
         return titulo;
     }
 
-    public List<Materia> getMateriasDictadas() {
-        return materiasDictadas;
-    }
-
-    public void setMateriasDictadas(List<Materia> materiasDictadas) {
-        this.materiasDictadas = materiasDictadas;
-    }
 }

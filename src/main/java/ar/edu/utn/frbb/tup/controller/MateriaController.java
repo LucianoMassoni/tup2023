@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("materia")
@@ -34,5 +35,10 @@ public class MateriaController {
     @GetMapping("/{idMateria}")
     public Materia getMateriaById(@PathVariable Integer idMateria) throws MateriaNotFoundException {
         return materiaService.getMateriaById(idMateria);
+    }
+
+    @GetMapping("/getAll")
+    public Map<Integer, Materia> getAllMaterias(){
+        return materiaService.getAllMaterias();
     }
 }

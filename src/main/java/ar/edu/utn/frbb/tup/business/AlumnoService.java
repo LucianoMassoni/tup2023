@@ -12,7 +12,10 @@ public interface AlumnoService {
 
     Alumno buscarAlumno(String apellidoAlumno);
 
-    Alumno eliminarAlumno(long alumnoId);
+    void eliminarAlumno(long alumnoId);
 
+    //Funcion de prueba
+    Alumno cargarAlumno(long dni);
 
+    //Alumno actualizarAlumno(AlumnoDto alumno);
 }
