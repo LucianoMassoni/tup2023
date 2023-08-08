@@ -10,4 +10,10 @@ public interface MateriaDao {
 
     Materia findById(int idMateria) throws MateriaNotFoundException;
     public Map<Integer, Materia> getAllMaterias();
+
+    void delete(Materia materia);
+
+    void modificar(Materia materia);
+
+    Materia findByName(String nombreMateria) throws MateriaNotFoundException;
 }

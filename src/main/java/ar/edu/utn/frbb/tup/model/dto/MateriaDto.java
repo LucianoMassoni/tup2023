@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model.dto;
 
+import ar.edu.utn.frbb.tup.model.Carrera;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 
@@ -10,6 +11,7 @@ public class MateriaDto {
     private int anio;
     private int cuatrimestre;
     private long profesorId;
+    //private Carrera carrera;
 
     public long getProfesorId() {
         return profesorId;
@@ -43,4 +45,15 @@ public class MateriaDto {
         this.cuatrimestre = cuatrimestre;
     }
 
+    /*
+    public Carrera getCarrera() {
+        return carrera;
+    }
+
+    public void setCarrera(Carrera carrera) {
+        this.carrera = carrera;
+    }
+
+
+     */
 }

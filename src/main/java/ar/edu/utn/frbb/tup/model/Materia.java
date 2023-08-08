@@ -12,6 +12,7 @@ public class Materia {
     private int cuatrimestre;
     private Profesor profesor;
     private List<Materia> correlatividades;
+    private Carrera carrera;
 
     public Materia(){}
     public Materia(String nombre, int anio, int cuatrimestre, Profesor profesor) {
@@ -74,6 +75,14 @@ public class Materia {
 
     public void setMateriaId(int materiaId) {
         this.materiaId = materiaId;
+    }
+
+    public Carrera getCarrera() {
+        return carrera;
+    }
+
+    public void setCarrera(Carrera carrera) {
+        this.carrera = carrera;
     }
 
     @Override
