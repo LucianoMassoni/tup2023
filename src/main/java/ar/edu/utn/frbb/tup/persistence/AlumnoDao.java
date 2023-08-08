@@ -10,4 +10,6 @@ public interface AlumnoDao {
     Alumno findAlumno(String apellidoAlumno);
 
     Alumno loadAlumno(Long dni);
+
+    Alumno actualizarAlumno(Alumno a);
 }

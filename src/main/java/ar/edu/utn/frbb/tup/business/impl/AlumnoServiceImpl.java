@@ -63,4 +63,13 @@ public class AlumnoServiceImpl implements AlumnoService {
     public Alumno cargarAlumno(long alumnoDni){
         return alumnoDao.loadAlumno(alumnoDni);
     }
+
+    public Alumno actualizarAlumno(AlumnoDto alumnoDto){
+        Alumno alumno = alumnoDao.loadAlumno(alumnoDto.getDni());
+        alumno.setNombre(alumnoDto.getNombre());
+        alumno.setApellido(alumnoDto.getApellido());
+        alumno.setDni(alumnoDto.getDni());
+        alumno = alumnoDao.actualizarAlumno(alumno);
+        return alumno;
+    }
 }

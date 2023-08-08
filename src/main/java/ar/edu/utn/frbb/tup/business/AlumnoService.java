@@ -17,5 +17,5 @@ public interface AlumnoService {
     //Funcion de prueba
     Alumno cargarAlumno(long dni);
 
-    //Alumno actualizarAlumno(AlumnoDto alumno);
+    Alumno actualizarAlumno(AlumnoDto alumno);
 }

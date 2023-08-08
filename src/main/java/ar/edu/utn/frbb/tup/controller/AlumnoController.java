@@ -20,6 +20,10 @@ public class AlumnoController {
         return alumnoService.crearAlumno(alumnoDto);
     }
 
+    @PutMapping("/{idAlumno}")
+    public Alumno modificarAlumno(@RequestBody AlumnoDto alumnoDto){
+        return alumnoService.actualizarAlumno(alumnoDto);
+    }
     @GetMapping("/buscar")
     public Alumno buscarAlumno(@RequestParam String apellido) {
 
