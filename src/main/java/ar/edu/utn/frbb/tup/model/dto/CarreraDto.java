@@ -6,10 +6,9 @@ import java.util.List;
 
 public class CarreraDto {
     String nombre;
-    int carreraId;
     int departamento;
     int cantidadCuatrimestres;
-    List<Materia> materiasList;
+    //List<Materia> materiasList;
 
     public String getNombre() {
         return nombre;
@@ -17,14 +16,6 @@ public class CarreraDto {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public int getCarreraId() {
-        return carreraId;
-    }
-
-    public void setCarreraId(int carreraId) {
-        this.carreraId = carreraId;
     }
 
     public int getDepartamento() {
@@ -43,6 +34,7 @@ public class CarreraDto {
         this.cantidadCuatrimestres = cantidadCuatrimestres;
     }
 
+    /*
     public List<Materia> getMateriasList() {
         return materiasList;
     }
@@ -50,4 +42,6 @@ public class CarreraDto {
     public void setMateriasList(List<Materia> materiasList) {
         this.materiasList = materiasList;
     }
+
+     */
 }

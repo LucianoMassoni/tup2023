@@ -1,12 +1,41 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import ar.edu.utn.frbb.tup.business.CarreraService;
+import ar.edu.utn.frbb.tup.model.Carrera;
+import ar.edu.utn.frbb.tup.model.dto.CarreraDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("carrera")
 public class CarreraController {
+    @Autowired
+    private CarreraService carreraService;
 
+    @PostMapping()
+    public Carrera crearCarrera(@RequestBody CarreraDto carreraDto){
+        return carreraService.crearCarrera(carreraDto);
+    }
 
+    @GetMapping("/getAll")
+    public Map<Integer, Carrera> getAll(){
+        return carreraService.getAll();
+    }
+
+    @GetMapping("/{idCarrera}")
+    public Carrera buscarCarreraPorId(@PathVariable int idCarrera){
+        return carreraService.buscarCarrera(idCarrera);
+    }
+
+    @PutMapping("/{idCarrera}")
+    public Carrera actualizarCarrera(@PathVariable int idCarrera, @RequestBody CarreraDto carreraDto){
+        return carreraService.actualizarCarrera(idCarrera, carreraDto);
+    }
+
+    @DeleteMapping("/{idCarrera}")
+    public void borrarCarrera(@PathVariable int idCarrera){
+        carreraService.eliminarCarrera(idCarrera);
+    }
 }

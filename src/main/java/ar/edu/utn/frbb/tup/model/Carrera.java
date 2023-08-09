@@ -3,12 +3,13 @@ package ar.edu.utn.frbb.tup.model;
 import java.util.List;
 
 public class Carrera {
-    private final String nombre;
+    private String nombre;
     private int carreraId;
     private int departamento;
     private int cantidadCuatrimestres;
     private List<Materia> materiasList;
 
+    public Carrera(){}
     public Carrera(String nombre, int carreraId, int departamento, int cantidadCuatrimestres) {
         this.nombre = nombre;
         this.carreraId = carreraId;
@@ -18,6 +19,10 @@ public class Carrera {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public int getCarreraId() {
@@ -42,6 +47,14 @@ public class Carrera {
 
     public void setCantidadCuatrimestres(int cantidadCuatrimestres) {
         this.cantidadCuatrimestres = cantidadCuatrimestres;
+    }
+
+    public List<Materia> getMateriasList() {
+        return materiasList;
+    }
+
+    public void setMateriasList(List<Materia> materiasList) {
+        this.materiasList = materiasList;
     }
 
     public void agregarMateria(Materia materia) {
