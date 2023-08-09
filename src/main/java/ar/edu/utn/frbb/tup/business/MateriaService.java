@@ -19,5 +19,5 @@ public interface MateriaService {
 
     void modificarMateria(int id, MateriaDto materiaDto) throws MateriaNotFoundException;
 
-    List<Materia> getAllMateriasOrdenadas(String orden);
+    List<Materia> getAllMateriasOrdenadas(String orden) throws MateriaNotFoundException;
 }

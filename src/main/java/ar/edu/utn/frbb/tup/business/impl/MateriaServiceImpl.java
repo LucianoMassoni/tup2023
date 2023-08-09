@@ -19,6 +19,7 @@ public class MateriaServiceImpl implements MateriaService {
     @Autowired
     private ProfesorService profesorService;
 
+    //todo tendria que controlar si el profesor y la carrera existe.
     @Override
     public Materia crearMateria(MateriaDto materia) throws IllegalArgumentException{
         Materia m = new Materia();
@@ -75,46 +76,24 @@ public class MateriaServiceImpl implements MateriaService {
         return dao.findByName(materiaNombre);
     }
 
-    //todo esta no esta devolviendo nombres ordenados
     @Override
-    public List<Materia> getAllMateriasOrdenadas(String orden){
+    public List<Materia> getAllMateriasOrdenadas(String orden) throws MateriaNotFoundException{
         List<Materia> materias = new ArrayList<>(dao.getAllMaterias().values().stream().toList());
 
-        if (Objects.equals(orden, "nombre_asc")){
-            materias.sort(new Comparator<Materia>() {
-                @Override
-                public int compare(Materia m1, Materia m2) {
-                    return m1.getNombre().compareTo(m2.getNombre());
-                }
-            });
-            return materias;
-        } else if (orden.equals("nombre_desc")) {
-            materias.sort(new Comparator<Materia>() {
-                @Override
-                public int compare(Materia m1, Materia m2) {
-                    return m2.getNombre().compareTo(m1.getNombre());
-                }
-            });
-            return materias;
-        } else if (orden.equals("codigo_asc")){
-            materias.sort(new Comparator<Materia>() {
-                @Override
-                public int compare(Materia m1, Materia m2) {
-                    return Integer.compare(m1.getMateriaId(), m2.getMateriaId());
-                }
-            });
-
-            return materias;
-        } else if (orden.equals("codigo_desc")) {
-            materias.sort(new Comparator<Materia>() {
-                @Override
-                public int compare(Materia m1, Materia m2) {
-                    return Integer.compare(m2.getMateriaId(), m1.getMateriaId());
-                }
-            });
-
-            return materias;
+        if (materias.isEmpty()){
+            throw new MateriaNotFoundException("No se encontraron materias");
         }
-        return null;
+        if (Objects.equals(orden, "nombre_asc")){
+           materias.sort((m1, m2) -> m1.getNombre().toLowerCase().compareTo(m2.getNombre().toLowerCase()));
+        } else if (orden.equals("nombre_desc")) {
+            materias.sort((m1, m2) -> m2.getNombre().toLowerCase().compareTo(m1.getNombre().toLowerCase()));
+        } else if (orden.equals("codigo_asc")){
+            materias.sort((m1, m2) -> Integer.compare(m1.getMateriaId(), m2.getMateriaId()));
+        } else if (orden.equals("codigo_desc")) {
+            materias.sort((m1, m2) -> Integer.compare(m2.getMateriaId(), m1.getMateriaId()));
+        } else {
+            return null;
+        }
+        return materias;
     }
 }

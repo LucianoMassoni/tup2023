@@ -9,7 +9,7 @@ public interface MateriaDao {
     Materia save(Materia materia);
 
     Materia findById(int idMateria) throws MateriaNotFoundException;
-    public Map<Integer, Materia> getAllMaterias();
+    Map<Integer, Materia> getAllMaterias();
 
     void delete(Materia materia);
 

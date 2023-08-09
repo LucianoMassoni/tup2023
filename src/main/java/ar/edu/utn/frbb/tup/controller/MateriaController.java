@@ -6,11 +6,16 @@ import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("materia")
@@ -58,7 +63,12 @@ public class MateriaController {
 
     //Esta anda pero la ruta debe ser materia/materias?orden={orden}
     @GetMapping("/materias")
-    public List<Materia> getAllMateriasOrdenadas(@RequestParam(name = "order") String order){
-        return materiaService.getAllMateriasOrdenadas(order);
+    public List<Materia> getAllMateriasOrdenadas(@RequestParam(name = "order") String order) throws MateriaNotFoundException, ResponseStatusException {
+        if (materiaService.getAllMateriasOrdenadas(order) == null){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY, "ut");
+        } else {
+            return materiaService.getAllMateriasOrdenadas(order);
+        }
     }
 }

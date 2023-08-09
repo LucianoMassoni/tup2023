@@ -11,7 +11,7 @@ public class MateriaDto {
     private int anio;
     private int cuatrimestre;
     private long profesorId;
-    //private Carrera carrera;
+    //private long carreraId;
 
     public long getProfesorId() {
         return profesorId;
@@ -46,11 +46,11 @@ public class MateriaDto {
     }
 
     /*
-    public Carrera getCarrera() {
+    public long getCarrera() {
         return carrera;
     }
 
-    public void setCarrera(Carrera carrera) {
+    public void setCarrera(long carrera) {
         this.carrera = carrera;
     }
 
