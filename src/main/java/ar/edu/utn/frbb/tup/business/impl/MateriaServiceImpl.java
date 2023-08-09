@@ -48,7 +48,6 @@ public class MateriaServiceImpl implements MateriaService {
         materia = getMateriaById(idMateria);
         if (materia != null){
             dao.getAllMaterias().remove(idMateria);
-            //todo deberia eliminarla de la lista de materias de una carrera?
             carreraService.eliminarMateria(idMateria);
         } else {
             throw new MateriaNotFoundException("La materia no se encontro");
@@ -63,7 +62,6 @@ public class MateriaServiceImpl implements MateriaService {
             m.setCuatrimestre(materiaDto.getCuatrimestre());
             m.setProfesor(profesorService.buscarProfesor(materiaDto.getProfesorId()));
             dao.modificar(m);
-            //todo Deberia modificar tambien en carrera? hago una funcion en carrera service que accedo desde aca para eso?
             carreraService.actualizarMateria(m);
         } else {
             throw new MateriaNotFoundException("la materia no existe");

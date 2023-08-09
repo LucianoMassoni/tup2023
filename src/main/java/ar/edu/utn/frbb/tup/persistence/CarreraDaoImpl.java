@@ -46,8 +46,9 @@ public class CarreraDaoImpl implements CarreraDao {
         return repositorioCarrera;
     }
 
-    //todo Esta bien que la capa dao de carrera tenga una instancia de la clase materia?
-
+    //todo
+    // Cuando agrega la materia a la lista de materias ahora la lista tiene una materia que tiene una carrera con una lista con materias...
+    // no se si la lista tendria que ser de ids de materias. O un map con {nombre : materiaNombre, id: materiaId}
     @Override
     public void agregarMateria(Materia materia){
         for (Carrera c:repositorioCarrera.values()){
