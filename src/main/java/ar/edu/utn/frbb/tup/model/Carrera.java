@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Carrera {
@@ -7,7 +8,7 @@ public class Carrera {
     private int carreraId;
     private int departamento;
     private int cantidadCuatrimestres;
-    private List<Materia> materiasList;
+    private List<Materia> materiasList = new ArrayList<>();
 
     public Carrera(){}
     public Carrera(String nombre, int carreraId, int departamento, int cantidadCuatrimestres) {

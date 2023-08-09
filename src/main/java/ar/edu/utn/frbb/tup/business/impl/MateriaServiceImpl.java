@@ -1,10 +1,12 @@
 package ar.edu.utn.frbb.tup.business.impl;
 
+import ar.edu.utn.frbb.tup.business.CarreraService;
 import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.business.ProfesorService;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.MateriaDao;
+import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,21 +17,23 @@ import java.util.*;
 public class MateriaServiceImpl implements MateriaService {
     @Autowired
     private MateriaDao dao;
-
     @Autowired
     private ProfesorService profesorService;
+    @Autowired
+    private CarreraService carreraService;
 
     //todo tendria que controlar si el profesor y la carrera existe.
     @Override
-    public Materia crearMateria(MateriaDto materia) throws IllegalArgumentException{
+    public Materia crearMateria(MateriaDto materia) throws IllegalArgumentException, CarreraNotFoundException {
         Materia m = new Materia();
         m.setNombre(materia.getNombre());
         m.setAnio(materia.getAnio());
         m.setCuatrimestre(materia.getCuatrimestre());
         m.setProfesor(profesorService.buscarProfesor(materia.getProfesorId()));
+        m.setCarrera(carreraService.buscarCarrera((int) materia.getCarreraId()));
         dao.save(m);
-        /* te tira un error si el nombre de la materia tiene una a
-
+        carreraService.agregarMateria(m);
+        /* te tira un error si el nombre de la materia tiene una "a"
         if (m.getNombre().contains("a")) {
             throw new IllegalArgumentException();
         }
@@ -44,6 +48,8 @@ public class MateriaServiceImpl implements MateriaService {
         materia = getMateriaById(idMateria);
         if (materia != null){
             dao.getAllMaterias().remove(idMateria);
+            //todo deberia eliminarla de la lista de materias de una carrera?
+            carreraService.eliminarMateria(idMateria);
         } else {
             throw new MateriaNotFoundException("La materia no se encontro");
         }
@@ -57,6 +63,8 @@ public class MateriaServiceImpl implements MateriaService {
             m.setCuatrimestre(materiaDto.getCuatrimestre());
             m.setProfesor(profesorService.buscarProfesor(materiaDto.getProfesorId()));
             dao.modificar(m);
+            //todo Deberia modificar tambien en carrera? hago una funcion en carrera service que accedo desde aca para eso?
+            carreraService.actualizarMateria(m);
         } else {
             throw new MateriaNotFoundException("la materia no existe");
         }

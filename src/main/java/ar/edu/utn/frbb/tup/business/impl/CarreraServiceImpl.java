@@ -1,9 +1,12 @@
 package ar.edu.utn.frbb.tup.business.impl;
 
 import ar.edu.utn.frbb.tup.business.CarreraService;
+import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Carrera;
+import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.CarreraDto;
 import ar.edu.utn.frbb.tup.persistence.CarreraDao;
+import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +27,7 @@ public class CarreraServiceImpl implements CarreraService {
         carreraDao.save(c);
         return c;
     }
-    public Carrera buscarCarrera(int carreraId){
+    public Carrera buscarCarrera(int carreraId) throws CarreraNotFoundException {
         if (carreraDao.load(carreraId) != null){
             return carreraDao.load(carreraId);
         }
@@ -32,7 +35,7 @@ public class CarreraServiceImpl implements CarreraService {
     }
 
     @Override
-    public Carrera actualizarCarrera(int id, CarreraDto carreraDto) {
+    public Carrera actualizarCarrera(int id, CarreraDto carreraDto) throws CarreraNotFoundException {
         Carrera c = carreraDao.load(id);
         if (c != null){
             c.setNombre(carreraDto.getNombre());
@@ -51,5 +54,20 @@ public class CarreraServiceImpl implements CarreraService {
     @Override
     public Map<Integer, Carrera> getAll(){
         return carreraDao.getAll();
+    }
+
+    @Override
+    public void agregarMateria(Materia materia){
+       carreraDao.agregarMateria(materia);
+    }
+
+    @Override
+    public void eliminarMateria(int materiaId){
+        carreraDao.eliminarMateria(materiaId);
+    }
+
+    @Override
+    public void actualizarMateria(Materia materia){
+        carreraDao.actualizarMateria(materia);
     }
 }

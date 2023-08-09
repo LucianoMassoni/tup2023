@@ -4,6 +4,7 @@ import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
+import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class MateriaController {
     }
 */
     @PostMapping
-    public Materia crearMateria(@RequestBody MateriaDto materiaDto) {
+    public Materia crearMateria(@RequestBody MateriaDto materiaDto) throws CarreraNotFoundException {
         return materiaService.crearMateria(materiaDto);
     }
 

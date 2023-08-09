@@ -3,6 +3,7 @@ package ar.edu.utn.frbb.tup.controller;
 import ar.edu.utn.frbb.tup.business.CarreraService;
 import ar.edu.utn.frbb.tup.model.Carrera;
 import ar.edu.utn.frbb.tup.model.dto.CarreraDto;
+import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,12 @@ public class CarreraController {
     }
 
     @GetMapping("/{idCarrera}")
-    public Carrera buscarCarreraPorId(@PathVariable int idCarrera){
+    public Carrera buscarCarreraPorId(@PathVariable int idCarrera) throws CarreraNotFoundException {
         return carreraService.buscarCarrera(idCarrera);
     }
 
     @PutMapping("/{idCarrera}")
-    public Carrera actualizarCarrera(@PathVariable int idCarrera, @RequestBody CarreraDto carreraDto){
+    public Carrera actualizarCarrera(@PathVariable int idCarrera, @RequestBody CarreraDto carreraDto) throws CarreraNotFoundException {
         return carreraService.actualizarCarrera(idCarrera, carreraDto);
     }
 

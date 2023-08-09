@@ -1,7 +1,9 @@
 package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Carrera;
+import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.CarreraDto;
+import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -21,15 +23,14 @@ public class CarreraDaoImpl implements CarreraDao {
         return carrera;
     }
     @Override
-    public Carrera load(int carreraId){
+    public Carrera load(int carreraId) throws CarreraNotFoundException {
         for (Carrera c:repositorioCarrera.values()){
             if (Objects.equals(c.getCarreraId(), carreraId)){
                 return c;
             }
         }
         //todo tirar una exception? || Dejar los Daos simples para el testeo
-        //throw new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId);
-        return null;
+        throw new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId);
     }
     @Override
     public void actualizar(int id, Carrera carrera){
@@ -44,4 +45,38 @@ public class CarreraDaoImpl implements CarreraDao {
     public Map<Integer, Carrera> getAll(){
         return repositorioCarrera;
     }
+
+    //todo Esta bien que la capa dao de carrera tenga una instancia de la clase materia?
+
+    @Override
+    public void agregarMateria(Materia materia){
+        for (Carrera c:repositorioCarrera.values()){
+            if (Objects.equals(c.getCarreraId(),materia.getCarrera().getCarreraId())){
+                c.agregarMateria(materia);
+            }
+        }
+    }
+
+    @Override
+    public void eliminarMateria(int materiaId){
+        for (Carrera c:repositorioCarrera.values()){
+            for (Materia m:c.getMateriasList()){
+                if (Objects.equals(m.getMateriaId(),materiaId)){
+                    c.getMateriasList().remove(m);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void actualizarMateria(Materia materia){
+        for (Carrera c:repositorioCarrera.values()){
+            for (Materia m: c.getMateriasList()){
+                if (Objects.equals(m.getMateriaId(),materia.getMateriaId())){
+                    c.getMateriasList().set(c.getMateriasList().indexOf(m), materia);
+                }
+            }
+        }
+    }
+
 }
