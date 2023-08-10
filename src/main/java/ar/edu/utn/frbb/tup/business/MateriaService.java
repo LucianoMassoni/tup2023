@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface MateriaService {
-    Materia crearMateria(MateriaDto inputData) throws IllegalArgumentException, CarreraNotFoundException;
+    Materia crearMateria(MateriaDto inputData) throws IllegalArgumentException, CarreraNotFoundException, MateriaNotFoundException;
 
     void eliminarMateria(int idMateria) throws MateriaNotFoundException;
     Map<Integer, Materia> getAllMaterias();

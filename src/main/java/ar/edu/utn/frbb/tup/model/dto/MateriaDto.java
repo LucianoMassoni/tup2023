@@ -4,6 +4,7 @@ import ar.edu.utn.frbb.tup.model.Carrera;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MateriaDto {
@@ -12,6 +13,7 @@ public class MateriaDto {
     private int cuatrimestre;
     private long profesorId;
     private long carreraId;
+    private List<Integer> correlativasIds = new ArrayList<>();
 
     public long getProfesorId() {
         return profesorId;
@@ -48,10 +50,19 @@ public class MateriaDto {
     public long getCarreraId() {
         return carreraId;
     }
-
     public void setCarreraId(long carreraId) {
         this.carreraId = carreraId;
     }
 
+    public List<Integer> getCorrelativasIds() {
+        return correlativasIds;
+    }
 
+    public void setCorrelativasIds(List<Integer> correlativasIds) {
+        this.correlativasIds = correlativasIds;
+    }
+
+    public void agregarCorrelativaId(int id){
+        this.correlativasIds.add(id);
+    }
 }

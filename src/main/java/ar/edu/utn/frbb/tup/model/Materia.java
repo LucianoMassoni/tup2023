@@ -1,5 +1,7 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.model.dto.MateriaInfoDto;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +13,7 @@ public class Materia {
     private int anio;
     private int cuatrimestre;
     private Profesor profesor;
-    private List<Materia> correlatividades;
+    private List<MateriaInfoDto> correlatividades = new ArrayList<>();
     private Carrera carrera;
 
     public Materia(){}
@@ -52,16 +54,16 @@ public class Materia {
         this.profesor = profesor;
     }
 
-    public void setCorrelatividades(List<Materia> correlatividades) {
+    public void setCorrelatividades(List<MateriaInfoDto> correlatividades) {
         this.correlatividades = correlatividades;
     }
 
-    public void agregarCorrelatividad(Materia m){
+    public void agregarCorrelatividad(MateriaInfoDto m){
         this.correlatividades.add(m);
 
     }
 
-    public List<Materia> getCorrelatividades(){
+    public List<MateriaInfoDto> getCorrelatividades(){
         return this.correlatividades;
     }
 

@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.business.ProfesorService;
 import ar.edu.utn.frbb.tup.model.Carrera;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
+import ar.edu.utn.frbb.tup.model.dto.MateriaInfoDto;
 import ar.edu.utn.frbb.tup.persistence.MateriaDao;
 import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
@@ -24,9 +25,20 @@ public class MateriaServiceImpl implements MateriaService {
     private CarreraService carreraService;
 
     //todo tendria que controlar si el profesor y la carrera existe
-    // cantidad de cuatrimestres y años, si el nombre ya existe etc.
+    // controlar si la correlativa tiene la misma carrera.
+
+    public MateriaInfoDto crearMateriaInfoDto(Materia materia){
+        MateriaInfoDto materiaInfoDto = new MateriaInfoDto();
+
+        materiaInfoDto.setId(materia.getMateriaId());
+        materiaInfoDto.setNombre(materia.getNombre());
+        materiaInfoDto.setAnio(materia.getAnio());
+        materiaInfoDto.setCuatrimestre(materiaInfoDto.getCuatrimestre());
+
+        return materiaInfoDto;
+    }
     @Override
-    public Materia crearMateria(MateriaDto materia) throws IllegalArgumentException, CarreraNotFoundException {
+    public Materia crearMateria(MateriaDto materia) throws IllegalArgumentException, CarreraNotFoundException, MateriaNotFoundException {
         for (Materia m:dao.getAllMaterias().values()){
             if (Objects.equals(m.getNombre().toLowerCase(), materia.getNombre().toLowerCase())){
                 throw new IllegalArgumentException("Ya existe una materia con el nombre " + materia.getNombre());
@@ -35,12 +47,38 @@ public class MateriaServiceImpl implements MateriaService {
         Carrera carrera = carreraService.buscarCarrera((int)materia.getCarreraId());
         int annosDeCarrera = carrera.getCantidadCuatrimestres()/2;
 
-        if (materia.getAnio()< 1 || materia.getAnio() > annosDeCarrera){
+        if (materia.getAnio() < 1 || materia.getAnio() > annosDeCarrera){
             throw new IllegalArgumentException("La carrera tiene " + annosDeCarrera + " años.");
         }
         if (materia.getCuatrimestre() < 1 || materia.getCuatrimestre() > 2){
             throw new IllegalArgumentException("La materia se debe cursar en el cuatrimestre 1 o en el cuatrimestre 2");
         }
+
+
+        //Controla si la lista de correlativas que le pasa el dto existe en la lista de materias del dao
+        for (Materia m:dao.getAllMaterias().values()){
+            if (m.getCorrelatividades().isEmpty()){
+                break;
+            }
+            for (MateriaInfoDto correlativa:m.getCorrelatividades()){
+                if (!materia.getCorrelativasIds().contains(correlativa.getId())){
+                    throw new IllegalArgumentException("Error al ingresar correlativas");
+                }
+            }
+        }
+
+        //Controla si la lista de correlativas y la materia tienen la misma carrera
+        for (Materia m:dao.getAllMaterias().values()){
+            if (m.getCorrelatividades().isEmpty()){
+                break;
+            }
+            for (MateriaInfoDto correlativa:m.getCorrelatividades()){
+                if (!Objects.equals(correlativa.getId(), materia.getCarreraId())){
+                    throw new IllegalArgumentException("La correlativa " + correlativa.getNombre() + " no pertenece a la carrera con id: "+ materia.getCarreraId());
+                }
+            }
+        }
+
 
         Materia m = new Materia();
         m.setNombre(materia.getNombre());
@@ -48,7 +86,13 @@ public class MateriaServiceImpl implements MateriaService {
         m.setCuatrimestre(materia.getCuatrimestre());
         m.setProfesor(profesorService.buscarProfesor(materia.getProfesorId()));
         m.setCarrera(carreraService.buscarCarrera((int) materia.getCarreraId()));
+        if (!materia.getCorrelativasIds().isEmpty()){
+            for (int idCorrelativa:materia.getCorrelativasIds()){
+                m.agregarCorrelatividad(crearMateriaInfoDto(dao.findById(idCorrelativa)));
+            }
+        }
         dao.save(m);
+        //Deberia pasarle materiaInfoDto
         carreraService.agregarMateria(materia);
 
         return m;

@@ -29,12 +29,16 @@ public class AlumnoTest {
         m2 = new Materia("Laboratorio 2", 1, 2, profesor1);
         m3 = new Materia("Laboratorio 3", 2, 1, profesor1);
         m4 = new Materia("Laboratorio 4", 2, 2, profesor1);
+        /*
         m2.agregarCorrelatividad(m1);
         m3.agregarCorrelatividad(m1);
         m3.agregarCorrelatividad(m2);
         m4.agregarCorrelatividad(m1);
         m4.agregarCorrelatividad(m2);
         m4.agregarCorrelatividad(m3);
+
+         */
+
         a1 = new Asignatura(m1);
         a2 = new Asignatura(m2);
         a3 = new Asignatura(m3);
