@@ -24,10 +24,9 @@ public class MateriaServiceImpl implements MateriaService {
     @Autowired
     private CarreraService carreraService;
 
-    //todo tendria que controlar si el profesor y la carrera existe
-    // controlar si la correlativa tiene la misma carrera.
 
-    public MateriaInfoDto crearMateriaInfoDto(Materia materia){
+
+    private MateriaInfoDto crearMateriaInfoDto(Materia materia){
         MateriaInfoDto materiaInfoDto = new MateriaInfoDto();
 
         materiaInfoDto.setId(materia.getMateriaId());
@@ -37,6 +36,9 @@ public class MateriaServiceImpl implements MateriaService {
 
         return materiaInfoDto;
     }
+
+    //todo tendria que controlar si el profesor y la carrera existe
+    // Deberia sintetizar un poco la funcion de crearMateria.
     @Override
     public Materia crearMateria(MateriaDto materia) throws IllegalArgumentException, CarreraNotFoundException, MateriaNotFoundException {
         for (Materia m:dao.getAllMaterias().values()){
@@ -53,7 +55,6 @@ public class MateriaServiceImpl implements MateriaService {
         if (materia.getCuatrimestre() < 1 || materia.getCuatrimestre() > 2){
             throw new IllegalArgumentException("La materia se debe cursar en el cuatrimestre 1 o en el cuatrimestre 2");
         }
-
 
         //Controla si la lista de correlativas que le pasa el dto existe en la lista de materias del dao
         for (Materia m:dao.getAllMaterias().values()){
@@ -79,7 +80,6 @@ public class MateriaServiceImpl implements MateriaService {
             }
         }
 
-
         Materia m = new Materia();
         m.setNombre(materia.getNombre());
         m.setAnio(materia.getAnio());
@@ -92,7 +92,6 @@ public class MateriaServiceImpl implements MateriaService {
             }
         }
         dao.save(m);
-        //Deberia pasarle materiaInfoDto
         carreraService.agregarMateria(materia);
 
         return m;
@@ -146,7 +145,7 @@ public class MateriaServiceImpl implements MateriaService {
             throw new MateriaNotFoundException("No se encontraron materias");
         }
         if (Objects.equals(orden, "nombre_asc")){
-           materias.sort((m1, m2) -> m1.getNombre().toLowerCase().compareTo(m2.getNombre().toLowerCase()));
+            materias.sort((m1, m2) -> m1.getNombre().toLowerCase().compareTo(m2.getNombre().toLowerCase()));
         } else if (orden.equals("nombre_desc")) {
             materias.sort((m1, m2) -> m2.getNombre().toLowerCase().compareTo(m1.getNombre().toLowerCase()));
         } else if (orden.equals("codigo_asc")){

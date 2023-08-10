@@ -36,7 +36,7 @@ public class CarreraController {
     }
 
     @DeleteMapping("/{idCarrera}")
-    public void borrarCarrera(@PathVariable int idCarrera){
+    public void borrarCarrera(@PathVariable int idCarrera) throws CarreraNotFoundException {
         carreraService.eliminarCarrera(idCarrera);
     }
 }

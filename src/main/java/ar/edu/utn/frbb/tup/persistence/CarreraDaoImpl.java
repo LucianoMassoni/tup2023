@@ -14,7 +14,7 @@ import java.util.Random;
 
 @Service
 public class CarreraDaoImpl implements CarreraDao {
-
+//Todo controlar las exceptions
     private static final Map<Integer, Carrera> repositorioCarrera = new HashMap<>();
     @Override
     public Carrera save(Carrera carrera){
@@ -30,7 +30,6 @@ public class CarreraDaoImpl implements CarreraDao {
                 return c;
             }
         }
-        //todo tirar una exception? || Dejar los Daos simples para el testeo
         throw new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId);
     }
     @Override

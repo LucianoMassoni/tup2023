@@ -43,13 +43,17 @@ public class CarreraServiceImpl implements CarreraService {
             c.setDepartamento(carreraDto.getDepartamento());
             c.setCantidadCuatrimestres(carreraDto.getCantidadCuatrimestres());
             carreraDao.actualizar(id, c);
+            return c;
         }
-        return c;
+        return null;
     }
 
     @Override
-    public void eliminarCarrera(int id){
-        carreraDao.delete(id);
+    public void eliminarCarrera(int id) throws CarreraNotFoundException {
+        Carrera c = carreraDao.load(id);
+        if (c != null){
+            carreraDao.delete(id);
+        }
     }
 
     @Override

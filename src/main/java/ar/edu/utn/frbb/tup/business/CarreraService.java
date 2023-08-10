@@ -15,7 +15,7 @@ public interface CarreraService {
 
     Carrera actualizarCarrera(int id, CarreraDto carreraId) throws CarreraNotFoundException;
 
-    void eliminarCarrera(int id);
+    void eliminarCarrera(int id) throws CarreraNotFoundException;
 
     Map<Integer, Carrera> getAll();
 
