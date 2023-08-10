@@ -3,6 +3,7 @@ package ar.edu.utn.frbb.tup.business.impl;
 import ar.edu.utn.frbb.tup.business.CarreraService;
 import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.business.ProfesorService;
+import ar.edu.utn.frbb.tup.model.Carrera;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.MateriaDao;
@@ -22,9 +23,25 @@ public class MateriaServiceImpl implements MateriaService {
     @Autowired
     private CarreraService carreraService;
 
-    //todo tendria que controlar si el profesor y la carrera existe.
+    //todo tendria que controlar si el profesor y la carrera existe
+    // cantidad de cuatrimestres y años, si el nombre ya existe etc.
     @Override
     public Materia crearMateria(MateriaDto materia) throws IllegalArgumentException, CarreraNotFoundException {
+        for (Materia m:dao.getAllMaterias().values()){
+            if (Objects.equals(m.getNombre().toLowerCase(), materia.getNombre().toLowerCase())){
+                throw new IllegalArgumentException("Ya existe una materia con el nombre " + materia.getNombre());
+            }
+        }
+        Carrera carrera = carreraService.buscarCarrera((int)materia.getCarreraId());
+        int annosDeCarrera = carrera.getCantidadCuatrimestres()/2;
+
+        if (materia.getAnio()< 1 || materia.getAnio() > annosDeCarrera){
+            throw new IllegalArgumentException("La carrera tiene " + annosDeCarrera + " años.");
+        }
+        if (materia.getCuatrimestre() < 1 || materia.getCuatrimestre() > 2){
+            throw new IllegalArgumentException("La materia se debe cursar en el cuatrimestre 1 o en el cuatrimestre 2");
+        }
+
         Materia m = new Materia();
         m.setNombre(materia.getNombre());
         m.setAnio(materia.getAnio());
@@ -32,12 +49,7 @@ public class MateriaServiceImpl implements MateriaService {
         m.setProfesor(profesorService.buscarProfesor(materia.getProfesorId()));
         m.setCarrera(carreraService.buscarCarrera((int) materia.getCarreraId()));
         dao.save(m);
-        carreraService.agregarMateria(m);
-        /* te tira un error si el nombre de la materia tiene una "a"
-        if (m.getNombre().contains("a")) {
-            throw new IllegalArgumentException();
-        }
-         */
+        carreraService.agregarMateria(materia);
 
         return m;
     }
@@ -48,7 +60,7 @@ public class MateriaServiceImpl implements MateriaService {
         materia = getMateriaById(idMateria);
         if (materia != null){
             dao.getAllMaterias().remove(idMateria);
-            carreraService.eliminarMateria(idMateria);
+            carreraService.eliminarMateria(materia.getNombre());
         } else {
             throw new MateriaNotFoundException("La materia no se encontro");
         }
@@ -62,7 +74,7 @@ public class MateriaServiceImpl implements MateriaService {
             m.setCuatrimestre(materiaDto.getCuatrimestre());
             m.setProfesor(profesorService.buscarProfesor(materiaDto.getProfesorId()));
             dao.modificar(m);
-            carreraService.actualizarMateria(m);
+            carreraService.actualizarMateria(materiaDto);
         } else {
             throw new MateriaNotFoundException("la materia no existe");
         }

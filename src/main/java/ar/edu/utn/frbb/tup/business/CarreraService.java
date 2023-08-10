@@ -1,8 +1,8 @@
 package ar.edu.utn.frbb.tup.business;
 
 import ar.edu.utn.frbb.tup.model.Carrera;
-import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.CarreraDto;
+import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public interface CarreraService {
 
     Map<Integer, Carrera> getAll();
 
-    void agregarMateria(Materia materia);
-    void eliminarMateria(int materiaId);
-    void actualizarMateria(Materia materia);
+    void agregarMateria(MateriaDto materia);
+    void eliminarMateria(String materiaNombre);
+    void actualizarMateria(MateriaDto materia);
 }

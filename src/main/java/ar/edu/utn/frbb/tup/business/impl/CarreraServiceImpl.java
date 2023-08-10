@@ -5,6 +5,7 @@ import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Carrera;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.CarreraDto;
+import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.CarreraDao;
 import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,17 +58,17 @@ public class CarreraServiceImpl implements CarreraService {
     }
 
     @Override
-    public void agregarMateria(Materia materia){
+    public void agregarMateria(MateriaDto materia){
        carreraDao.agregarMateria(materia);
     }
 
     @Override
-    public void eliminarMateria(int materiaId){
-        carreraDao.eliminarMateria(materiaId);
+    public void eliminarMateria(String materiaNombre){
+        carreraDao.eliminarMateria(materiaNombre);
     }
 
     @Override
-    public void actualizarMateria(Materia materia){
+    public void actualizarMateria(MateriaDto materia){
         carreraDao.actualizarMateria(materia);
     }
 }

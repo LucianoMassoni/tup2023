@@ -3,6 +3,7 @@ package ar.edu.utn.frbb.tup.persistence;
 import ar.edu.utn.frbb.tup.model.Carrera;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.CarreraDto;
+import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -46,23 +47,20 @@ public class CarreraDaoImpl implements CarreraDao {
         return repositorioCarrera;
     }
 
-    //todo
-    // Cuando agrega la materia a la lista de materias ahora la lista tiene una materia que tiene una carrera con una lista con materias...
-    // no se si la lista tendria que ser de ids de materias. O un map con {nombre : materiaNombre, id: materiaId}
+
     @Override
-    public void agregarMateria(Materia materia){
+    public void agregarMateria(MateriaDto materia){
         for (Carrera c:repositorioCarrera.values()){
-            if (Objects.equals(c.getCarreraId(),materia.getCarrera().getCarreraId())){
+            if (Objects.equals(c.getCarreraId(),(int)materia.getCarreraId())){
                 c.agregarMateria(materia);
             }
         }
     }
-
     @Override
-    public void eliminarMateria(int materiaId){
+    public void eliminarMateria(String materiaNombre){
         for (Carrera c:repositorioCarrera.values()){
-            for (Materia m:c.getMateriasList()){
-                if (Objects.equals(m.getMateriaId(),materiaId)){
+            for (MateriaDto m:c.getMateriasList()){
+                if (Objects.equals(m.getNombre(),materiaNombre)){
                     c.getMateriasList().remove(m);
                 }
             }
@@ -70,14 +68,15 @@ public class CarreraDaoImpl implements CarreraDao {
     }
 
     @Override
-    public void actualizarMateria(Materia materia){
+    public void actualizarMateria(MateriaDto materia){
         for (Carrera c:repositorioCarrera.values()){
-            for (Materia m: c.getMateriasList()){
-                if (Objects.equals(m.getMateriaId(),materia.getMateriaId())){
+            for (MateriaDto m: c.getMateriasList()){
+                if (Objects.equals(m.getNombre(), materia.getNombre())){
                     c.getMateriasList().set(c.getMateriasList().indexOf(m), materia);
                 }
             }
         }
     }
+
 
 }
