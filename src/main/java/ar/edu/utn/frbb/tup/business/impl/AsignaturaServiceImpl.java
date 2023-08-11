@@ -14,6 +14,8 @@ import ar.edu.utn.frbb.tup.persistence.exception.DaoException;
 import java.util.List;
 
 public class AsignaturaServiceImpl implements AsignaturaService {
+
+    //Todo aca podria crear asignatura obteniendo el id de las materias. y el resto se inicia como no cursada y sin nota, y el id random.
     @Override
     public Asignatura getAsignatura(int materiaId, long dni) {
         return null;

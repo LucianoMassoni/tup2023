@@ -51,12 +51,12 @@ public class AlumnoServiceImpl implements AlumnoService {
     }
 
     @Override
-    public Alumno buscarAlumno(String apellido) {
-        return alumnoDao.findAlumno(apellido);
+    public Alumno buscarAlumno(Long id) {
+        return alumnoDao.findAlumno(id);
     }
     @Override
-    public void eliminarAlumno(long alumnoId){
-        //alumnoDao.eliminarAlumno(alumnoId);
+    public void eliminarAlumno(Long alumnoId){
+        alumnoDao.deleteAlumno(alumnoId);
     }
 
     //Funcion de prueba

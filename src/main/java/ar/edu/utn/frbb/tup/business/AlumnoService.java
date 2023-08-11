@@ -10,9 +10,9 @@ public interface AlumnoService {
 
     Alumno crearAlumno(AlumnoDto alumno);
 
-    Alumno buscarAlumno(String apellidoAlumno);
+    Alumno buscarAlumno(Long alumnoId);
 
-    void eliminarAlumno(long alumnoId);
+    void eliminarAlumno(Long alumnoId);
 
     //Funcion de prueba
     Alumno cargarAlumno(long dni);
