@@ -55,7 +55,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         Random random = new Random();
         a.setId(random.nextLong());
         if (alumno.getIdMateriasDeAsignatura() != null){
-            for (Long idMateria:alumno.getIdMateriasDeAsignatura()){
+            for (Integer idMateria:alumno.getIdMateriasDeAsignatura()){
                 a.addAsignatura(asignaturaService.crearAsignatura(idMateria));
             }
         }
@@ -91,7 +91,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         if (alumnoDto.getIdMateriasDeAsignatura() != null) {
             List<Asignatura> nuevasAsignaturas = new ArrayList<>();
 
-            for (Long idMateria : alumnoDto.getIdMateriasDeAsignatura()) {
+            for (Integer idMateria : alumnoDto.getIdMateriasDeAsignatura()) {
                 // Si la asignatura no está en la lista actual del alumno, la creamos y la añadimos
                 if (alumno.getAsignaturas().stream().noneMatch(asignatura -> Objects.equals(asignatura.getMateria().getMateriaId(), idMateria))) {
                     nuevasAsignaturas.add(asignaturaService.crearAsignatura(idMateria));
@@ -100,15 +100,18 @@ public class AlumnoServiceImpl implements AlumnoService {
             alumno.getAsignaturas().addAll(nuevasAsignaturas);
         }
 
-        List<Asignatura> asignaturasAEliminar = new ArrayList<>(alumno.getAsignaturas());
 
-        asignaturasAEliminar.removeIf(asignatura ->
-                !alumnoDto.getIdMateriasDeAsignatura().contains(asignatura.getMateria().getMateriaId())
-        );
+        List<Asignatura> asignaturasAEliminar = new ArrayList<>();
 
-        for (Asignatura asignaturaAEliminar : asignaturasAEliminar) {
-            asignaturaService.eliminarAsignatura(asignaturaAEliminar.getId());
-            alumno.getAsignaturas().remove(asignaturaAEliminar);
+        for (Asignatura asignatura:alumno.getAsignaturas()){
+            if (!(alumnoDto.getIdMateriasDeAsignatura().contains(asignatura.getMateria().getMateriaId()))){
+                asignaturasAEliminar.add(asignatura);
+            }
+        }
+        alumno.getAsignaturas().removeAll(asignaturasAEliminar);
+
+        for (Asignatura asignatura : asignaturasAEliminar) {
+            asignaturaService.eliminarAsignatura(asignatura.getId());
         }
 
         alumno = alumnoDao.actualizarAlumno(alumno);

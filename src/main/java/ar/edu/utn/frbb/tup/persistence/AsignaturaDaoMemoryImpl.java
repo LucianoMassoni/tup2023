@@ -35,17 +35,20 @@ public class AsignaturaDaoMemoryImpl implements AsignaturaDao {
 
     @Override
     public void delete(long id) throws AsignaturaNotFoundException {
+        Iterator<Map.Entry<Long, Asignatura>> iterator = repositorioMateria.entrySet().iterator();
         boolean deleteRelese = false;
-        for (Asignatura asignatura:repositorioMateria.values()){
-            if (Objects.equals(asignatura.getId(), id)){
-                repositorioMateria.remove(id);
+
+        while (iterator.hasNext()) {
+            Map.Entry<Long, Asignatura> entry = iterator.next();
+            if (Objects.equals(entry.getValue().getId(), id)) {
+                iterator.remove();
                 deleteRelese = true;
             }
         }
-        if (!deleteRelese){
+
+        if (!deleteRelese) {
             throw new AsignaturaNotFoundException("No se encontro una asignatura con el id: " + id);
         }
-
     }
 
     public List<Asignatura> getAllAsignaturas(){

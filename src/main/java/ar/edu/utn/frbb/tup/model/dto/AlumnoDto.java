@@ -10,7 +10,7 @@ public class AlumnoDto {
 
     //ToDo esta lista puede ser de AsignaturaDto asi cuando creo las materias despues puedo buscarlas por id dentro del dto.
     // o puede ser una lista de ids de las materias a las que pertenecen las asignaturas y las asignaturas se crean a partir de eso./ idMateriaDeAsignatura
-    List<Long> idMateriasDeAsignatura = new ArrayList<>();
+    List<Integer> idMateriasDeAsignatura = new ArrayList<>();
 
     public String getNombre() {
         return nombre;
@@ -36,15 +36,15 @@ public class AlumnoDto {
         this.dni = dni;
     }
 
-    public List<Long> getIdMateriasDeAsignatura() {
+    public List<Integer> getIdMateriasDeAsignatura() {
         return idMateriasDeAsignatura;
     }
 
-    public void setIdMateriaDeAsignatura(List<Long> idMateriasDeAsignatura) {
+    public void setIdMateriaDeAsignatura(List<Integer> idMateriasDeAsignatura) {
         this.idMateriasDeAsignatura = idMateriasDeAsignatura;
     }
 
-    public void addIdMateriaDeAsignatura(Long idMateriaDeAsinatura){
+    public void addIdMateriaDeAsignatura(Integer idMateriaDeAsinatura){
         this.idMateriasDeAsignatura.add(idMateriaDeAsinatura);
     }
 }
