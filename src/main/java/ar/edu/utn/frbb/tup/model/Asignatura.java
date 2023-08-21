@@ -49,6 +49,10 @@ public class Asignatura {
         this.id = id;
     }
 
+    public void setMateria(Materia materia) {
+        this.materia = materia;
+    }
+
     /*
     * Aca terminan los getters y setters y empiezan las funciones que creo que deberian estar en la capa
     * de servicio.

@@ -12,7 +12,7 @@ public class Alumno {
     private String nombre;
     private String apellido;
     private long dni;
-    private List<Asignatura> asignaturas;
+    private List<Asignatura> asignaturas = new ArrayList<>();
 
     public Alumno() {
     }
@@ -56,11 +56,19 @@ public class Alumno {
         this.id = id;
     }
 
-    public void agregarAsignatura(Asignatura a){
+    public void addAsignatura(Asignatura a){
         this.asignaturas.add(a);
     }
 
-    public List<Asignatura> obtenerListaAsignaturas(){
+    public void deleteAsignatura(Asignatura a){
+        this.asignaturas.remove(a);
+    }
+
+    public void setAsignaturas(List<Asignatura> asignaturas){
+        this.asignaturas = asignaturas;
+    }
+
+    public List<Asignatura> getAsignaturas(){
         return this.asignaturas;
     }
 
@@ -70,8 +78,7 @@ public class Alumno {
     * */
 
     private void chequearCorrelatividad(Materia correlativa) throws CorrelatividadException {
-        for (Asignatura a:
-                asignaturas) {
+        for (Asignatura a: asignaturas) {
             if (correlativa.getNombre().equals(a.getNombreAsignatura())) {
                 if (!EstadoAsignatura.APROBADA.equals(a.getEstado())) {
                     throw new CorrelatividadException("La asignatura " + a.getNombreAsignatura() + " no está aprobada");

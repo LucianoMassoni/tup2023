@@ -108,6 +108,7 @@ public class MateriaServiceImpl implements MateriaService {
             throw new MateriaNotFoundException("La materia no se encontro");
         }
     }
+
     public void modificarMateria(int id, MateriaDto materiaDto) throws MateriaNotFoundException {
         Materia m;
         m = getMateriaById(id);
@@ -118,6 +119,7 @@ public class MateriaServiceImpl implements MateriaService {
             m.setProfesor(profesorService.buscarProfesor(materiaDto.getProfesorId()));
             dao.modificar(m);
             carreraService.actualizarMateria(materiaDto);
+
         } else {
             throw new MateriaNotFoundException("la materia no existe");
         }

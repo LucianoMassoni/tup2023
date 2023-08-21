@@ -6,6 +6,8 @@ import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
+import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +26,13 @@ public class AlumnoController {
     @Autowired
     private AsignaturaService asignaturaService;
 
-    @PostMapping("/")
-    public Alumno crearAlumno(@RequestBody AlumnoDto alumnoDto) {
+    @PostMapping()
+    public Alumno crearAlumno(@RequestBody AlumnoDto alumnoDto) throws MateriaNotFoundException {
         return alumnoService.crearAlumno(alumnoDto);
     }
 
     @PutMapping("/{idAlumno}")
-    public Alumno modificarAlumno(@RequestBody AlumnoDto alumnoDto){
+    public Alumno modificarAlumno(@RequestBody AlumnoDto alumnoDto) throws MateriaNotFoundException, AsignaturaNotFoundException {
         return alumnoService.actualizarAlumno(alumnoDto);
     }
     @GetMapping("/{idAlumno}")
@@ -39,7 +41,7 @@ public class AlumnoController {
     }
 
     @PutMapping("/{idAlumno}/asignatura/{idAsignatura}")
-    public void cambiarEstadoAsignatura(@PathVariable long idAlumno, @PathVariable long idAsignatura, @RequestBody Asignatura a){
+    public void cambiarEstadoAsignatura(@PathVariable long idAlumno, @PathVariable long idAsignatura, @RequestBody Asignatura a) throws AsignaturaNotFoundException {
         Alumno alumno = alumnoService.buscarAlumno(idAlumno);
         if (!Objects.equals(a.getId(), idAsignatura)){
             throw new ResponseStatusException(
