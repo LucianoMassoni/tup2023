@@ -13,4 +13,6 @@ public interface AsignaturaService {
     List<Asignatura> getAllAsignaturas();
     void eliminarAsignatura(long asignaturaId) throws AsignaturaNotFoundException;
     void actualizarAsignatura(Asignatura a) throws AsignaturaNotFoundException;
+
+
 }

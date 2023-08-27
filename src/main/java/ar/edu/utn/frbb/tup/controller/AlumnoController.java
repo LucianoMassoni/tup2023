@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
+import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,18 +41,11 @@ public class AlumnoController {
        return alumnoService.buscarAlumno(idAlumno);
     }
 
+
+    //ToDo me parece que deberia de pasar una asignatura dto, asi no se puede cambiar el id o la materia, y solo cambiar el estado y dar la nota
     @PutMapping("/{idAlumno}/asignatura/{idAsignatura}")
-    public void cambiarEstadoAsignatura(@PathVariable long idAlumno, @PathVariable long idAsignatura, @RequestBody Asignatura a) throws AsignaturaNotFoundException {
-        Alumno alumno = alumnoService.buscarAlumno(idAlumno);
-        if (!Objects.equals(a.getId(), idAsignatura)){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_GATEWAY, "Error. No se econtró una asignatura con id: " + idAsignatura);
-        } else if (alumno == null){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_GATEWAY, "Error. No se econtró un alumno con id: " + idAlumno);
-        } else {
-            asignaturaService.actualizarAsignatura(a);
-        }
+    public Alumno cambiarEstadoAsignatura(@PathVariable long idAlumno, @PathVariable long idAsignatura, @RequestBody AsignaturaDto asignatura) throws AsignaturaNotFoundException {
+        return alumnoService.cambiarEstadoAsignatura(idAlumno, idAsignatura, asignatura);
     }
 
 }
