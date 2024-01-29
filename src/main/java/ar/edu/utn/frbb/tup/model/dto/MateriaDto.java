@@ -11,15 +11,15 @@ public class MateriaDto {
     private String nombre;
     private int anio;
     private int cuatrimestre;
-    private long profesorId;
-    private long carreraId;
+    private int profesorId;
+    private int carreraId;
     private List<Integer> correlativasIds = new ArrayList<>();
 
-    public long getProfesorId() {
+    public int getProfesorId() {
         return profesorId;
     }
 
-    public void setProfesorId(long profesorId) {
+    public void setProfesorId(int profesorId) {
         this.profesorId = profesorId;
     }
 
@@ -47,10 +47,10 @@ public class MateriaDto {
         this.cuatrimestre = cuatrimestre;
     }
 
-    public long getCarreraId() {
+    public int getCarreraId() {
         return carreraId;
     }
-    public void setCarreraId(long carreraId) {
+    public void setCarreraId(int carreraId) {
         this.carreraId = carreraId;
     }
 

@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Alumno {
-    private long id;
+    private int id;
     private String nombre;
     private String apellido;
-    private long dni;
+    private int dni;
     private List<Asignatura> asignaturas = new ArrayList<>();
 
     public Alumno() {
     }
-    public Alumno(String nombre, String apellido, long dni) {
+    public Alumno(String nombre, String apellido, int dni) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -32,7 +32,7 @@ public class Alumno {
         this.apellido = apellido;
     }
 
-    public void setDni(long dni) {
+    public void setDni(int dni) {
         this.dni = dni;
     }
 
@@ -44,15 +44,15 @@ public class Alumno {
         return apellido;
     }
 
-    public long getDni() {
+    public int getDni() {
         return dni;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

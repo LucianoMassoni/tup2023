@@ -6,7 +6,7 @@ import java.util.List;
 public class AlumnoDto {
     String nombre;
     String apellido;
-    long dni;
+    int dni;
 
     //ToDo esta lista puede ser de AsignaturaDto asi cuando creo las materias despues puedo buscarlas por id dentro del dto.
     // o puede ser una lista de ids de las materias a las que pertenecen las asignaturas y las asignaturas se crean a partir de eso./ idMateriaDeAsignatura
@@ -28,11 +28,11 @@ public class AlumnoDto {
         this.apellido = apellido;
     }
 
-    public long getDni() {
+    public int getDni() {
         return dni;
     }
 
-    public void setDni(long dni) {
+    public void setDni(int dni) {
         this.dni = dni;
     }
 

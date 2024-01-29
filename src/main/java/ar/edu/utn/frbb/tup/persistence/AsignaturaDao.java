@@ -11,7 +11,9 @@ public interface AsignaturaDao {
 
     Asignatura actualizar(Asignatura a) throws AsignaturaNotFoundException;
 
-    void delete(long id) throws AsignaturaNotFoundException;
+    void delete(int id) throws AsignaturaNotFoundException;
 
     List<Asignatura> getAllAsignaturas();
+
+
 }

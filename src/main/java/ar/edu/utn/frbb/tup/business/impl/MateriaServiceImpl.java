@@ -46,7 +46,7 @@ public class MateriaServiceImpl implements MateriaService {
                 throw new IllegalArgumentException("Ya existe una materia con el nombre " + materia.getNombre());
             }
         }
-        Carrera carrera = carreraService.buscarCarrera((int)materia.getCarreraId());
+        Carrera carrera = carreraService.buscarCarrera(materia.getCarreraId());
         int annosDeCarrera = carrera.getCantidadCuatrimestres()/2;
 
         if (materia.getAnio() < 1 || materia.getAnio() > annosDeCarrera){
@@ -85,7 +85,7 @@ public class MateriaServiceImpl implements MateriaService {
         m.setAnio(materia.getAnio());
         m.setCuatrimestre(materia.getCuatrimestre());
         m.setProfesor(profesorService.buscarProfesor(materia.getProfesorId()));
-        m.setCarrera(carreraService.buscarCarrera((int) materia.getCarreraId()));
+        m.setCarrera(carreraService.buscarCarrera(materia.getCarreraId()));
         if (!materia.getCorrelativasIds().isEmpty()){
             for (int idCorrelativa:materia.getCorrelativasIds()){
                 m.agregarCorrelatividad(crearMateriaInfoDto(dao.findById(idCorrelativa)));

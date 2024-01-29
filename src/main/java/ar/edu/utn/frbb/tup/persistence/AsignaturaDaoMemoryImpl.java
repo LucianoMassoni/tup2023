@@ -9,7 +9,7 @@ import java.util.*;
 
 @Component
 public class AsignaturaDaoMemoryImpl implements AsignaturaDao {
-    private static final Map<Long, Asignatura> repositorioMateria = new HashMap<>();
+    private static final Map<Integer, Asignatura> repositorioMateria = new HashMap<>();
 
 
     @Override
@@ -34,12 +34,12 @@ public class AsignaturaDaoMemoryImpl implements AsignaturaDao {
 
 
     @Override
-    public void delete(long id) throws AsignaturaNotFoundException {
-        Iterator<Map.Entry<Long, Asignatura>> iterator = repositorioMateria.entrySet().iterator();
+    public void delete(int id) throws AsignaturaNotFoundException {
+        Iterator<Map.Entry<Integer, Asignatura>> iterator = repositorioMateria.entrySet().iterator();
         boolean deleteRelese = false;
 
         while (iterator.hasNext()) {
-            Map.Entry<Long, Asignatura> entry = iterator.next();
+            Map.Entry<Integer, Asignatura> entry = iterator.next();
             if (Objects.equals(entry.getValue().getId(), id)) {
                 iterator.remove();
                 deleteRelese = true;

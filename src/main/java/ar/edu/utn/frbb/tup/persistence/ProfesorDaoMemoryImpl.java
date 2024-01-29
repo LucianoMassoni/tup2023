@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class ProfesorDaoMemoryImpl implements ProfesorDao{
 
     @Override
-    public Profesor get(long id) {
+    public Profesor get(int id) {
             return new Profesor("Luciano", "Salotto", "Lic. Ciencias Computación");
     }
 }

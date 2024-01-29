@@ -7,6 +7,8 @@ import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
 import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
+import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
+import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +35,18 @@ public class AlumnoController {
     }
 
     @PutMapping("/{idAlumno}")
-    public Alumno modificarAlumno(@RequestBody AlumnoDto alumnoDto) throws MateriaNotFoundException, AsignaturaNotFoundException {
+    public Alumno modificarAlumno(@RequestBody AlumnoDto alumnoDto) throws MateriaNotFoundException, AsignaturaNotFoundException, AlumnoNotFoundException {
         return alumnoService.actualizarAlumno(alumnoDto);
     }
     @GetMapping("/{idAlumno}")
-    public Alumno buscarAlumno(@PathVariable Long idAlumno) {
+    public Alumno buscarAlumno(@PathVariable int idAlumno) throws AlumnoNotFoundException {
        return alumnoService.buscarAlumno(idAlumno);
     }
 
 
     //ToDo me parece que deberia de pasar una asignatura dto, asi no se puede cambiar el id o la materia, y solo cambiar el estado y dar la nota
     @PutMapping("/{idAlumno}/asignatura/{idAsignatura}")
-    public Alumno cambiarEstadoAsignatura(@PathVariable long idAlumno, @PathVariable long idAsignatura, @RequestBody AsignaturaDto asignatura) throws AsignaturaNotFoundException {
+    public Alumno cambiarEstadoAsignatura(@PathVariable int idAlumno, @PathVariable int idAsignatura, @RequestBody AsignaturaDto asignatura) throws AsignaturaNotFoundException, AlumnoNotFoundException, MateriaNotFoundException, EstadoIncorrectoException {
         return alumnoService.cambiarEstadoAsignatura(idAlumno, idAsignatura, asignatura);
     }
 

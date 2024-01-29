@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Alumno;
+import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,29 +14,27 @@ import java.util.Random;
 @Service
 public class AlumnoDaoMemoryImpl implements AlumnoDao {
 
-    private static Map<Long, Alumno> repositorioAlumnos = new HashMap<>();
+    private static Map<Integer, Alumno> repositorioAlumnos = new HashMap<>();
 
     @Override
     public Alumno saveAlumno(Alumno alumno) {
         Random random = new Random();
-        alumno.setId(random.nextLong());
-        return repositorioAlumnos.put(alumno.getDni(), alumno);
+        alumno.setId(random.nextInt());
+        return repositorioAlumnos.put(alumno.getId(), alumno);
     }
 
     @Override
-    public Alumno findAlumno(Long id) {
+    public Alumno findAlumno(Integer id) throws AlumnoNotFoundException {
         for (Alumno a: repositorioAlumnos.values()) {
             if (a.getId() == id){
                 return a;
             }
         }
-        throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "No existen alumnos con esos datos."
-        );
+        throw new AlumnoNotFoundException("No se encontró un alumno con el id: " + id);
     }
 
     @Override
-    public void deleteAlumno(Long idAlumno){
+    public void deleteAlumno(Integer idAlumno){
         for (Alumno a: repositorioAlumnos.values()) {
             if (a.getId() == idAlumno){
                 repositorioAlumnos.remove(idAlumno);
@@ -44,12 +43,12 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     }
 
     @Override
-    public Alumno loadAlumno(Long dni) {
-        return repositorioAlumnos.getOrDefault(dni, null);
+    public Alumno loadAlumno(Integer id) {
+        return repositorioAlumnos.getOrDefault(id, null);
     }
 
     @Override
-    public Alumno actualizarAlumno(Alumno a){
+    public Alumno actualizarAlumno(Alumno a) throws AlumnoNotFoundException {
         if (findAlumno(a.getId()) == null)
             return null;
         else {

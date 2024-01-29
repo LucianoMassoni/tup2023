@@ -67,7 +67,7 @@ public class MateriaController {
     public List<Materia> getAllMateriasOrdenadas(@RequestParam(name = "order") String order) throws MateriaNotFoundException, ResponseStatusException {
         if (materiaService.getAllMateriasOrdenadas(order) == null){
             throw new ResponseStatusException(
-                    HttpStatus.BAD_GATEWAY, "ut");
+                    BAD_REQUEST, "404, bad request");
         } else {
             return materiaService.getAllMateriasOrdenadas(order);
         }

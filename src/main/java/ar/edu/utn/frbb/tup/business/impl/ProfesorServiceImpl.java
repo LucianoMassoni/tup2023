@@ -15,7 +15,7 @@ public class ProfesorServiceImpl implements ProfesorService {
     private ProfesorDao dao;
 
     @Override
-    public Profesor buscarProfesor(long id) {
+    public Profesor buscarProfesor(int id) {
         return dao.get(id);
     }
 }
