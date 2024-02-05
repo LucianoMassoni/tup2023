@@ -25,21 +25,13 @@ public class MateriaController {
     @Autowired
     private MateriaService materiaService;
 
-   /* @GetMapping
-    public List<Materia> getMaterias() {
-        Materia m = new Materia("labo 1", 2, 1, new Profesor("Lucho", "Salotto", "Lic"));
-        Materia m1 = new Materia("labo 2", 2, 1, new Profesor("Juan", "Perez", "Lic"));
-
-        return Arrays.asList(m1, m);
-    }
-*/
     @PostMapping
     public Materia crearMateria(@RequestBody MateriaDto materiaDto) throws CarreraNotFoundException, MateriaNotFoundException {
         return materiaService.crearMateria(materiaDto);
     }
 
     @PutMapping("/{idMateria}")
-    public void modificarMateria(@PathVariable int idMateria, @RequestBody MateriaDto materia) throws MateriaNotFoundException {
+    public void modificarMateria(@PathVariable int idMateria, @RequestBody MateriaDto materia) throws MateriaNotFoundException, CarreraNotFoundException {
         materiaService.modificarMateria(idMateria, materia);
     }
 
@@ -52,10 +44,6 @@ public class MateriaController {
     public Materia getMateriaById(@PathVariable Integer idMateria) throws MateriaNotFoundException {
         return materiaService.getMateriaById(idMateria);
     }
-    @GetMapping("/getAll")
-    public Map<Integer, Materia> getAllMaterias(){
-        return materiaService.getAllMaterias();
-    }
 
     @GetMapping()
     public Materia getMateriaByName(@RequestParam(name = "nombre") String unNombre) throws MateriaNotFoundException{
@@ -64,12 +52,7 @@ public class MateriaController {
 
     //Esta anda pero la ruta debe ser materia/materias?orden={orden}
     @GetMapping("/materias")
-    public List<Materia> getAllMateriasOrdenadas(@RequestParam(name = "order") String order) throws MateriaNotFoundException, ResponseStatusException {
-        if (materiaService.getAllMateriasOrdenadas(order) == null){
-            throw new ResponseStatusException(
-                    BAD_REQUEST, "404, bad request");
-        } else {
-            return materiaService.getAllMateriasOrdenadas(order);
-        }
+    public List<Materia> getAllMateriasOrdenadas(@RequestParam(name = "orden") String orden) throws MateriaNotFoundException, ResponseStatusException {
+        return materiaService.getAllMateriasOrdenadas(orden);
     }
 }

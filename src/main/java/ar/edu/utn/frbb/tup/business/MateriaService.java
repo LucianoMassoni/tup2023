@@ -12,13 +12,13 @@ public interface MateriaService {
     Materia crearMateria(MateriaDto inputData) throws IllegalArgumentException, CarreraNotFoundException, MateriaNotFoundException;
 
     void eliminarMateria(int idMateria) throws MateriaNotFoundException;
-    Map<Integer, Materia> getAllMaterias();
 
     Materia getMateriaById(int idMateria) throws MateriaNotFoundException;
 
     Materia  getMateriaByName(String nombreMateria) throws MateriaNotFoundException;
 
-    void modificarMateria(int id, MateriaDto materiaDto) throws MateriaNotFoundException;
+    void modificarMateria(int id, MateriaDto materiaDto) throws MateriaNotFoundException, CarreraNotFoundException;
 
     List<Materia> getAllMateriasOrdenadas(String orden) throws MateriaNotFoundException;
+
 }

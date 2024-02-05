@@ -66,6 +66,8 @@ public class CarreraDaoImpl implements CarreraDao {
         }
     }
 
+
+    //TODO Creo que deveria modifica la funcion porque cuando se actualiza con otro nombre no se cambia. capas un materiaInfoDto
     @Override
     public void actualizarMateria(MateriaDto materia){
         for (Carrera c:repositorioCarrera.values()){
