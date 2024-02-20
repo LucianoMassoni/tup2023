@@ -1,14 +1,11 @@
 package ar.edu.utn.frbb.tup.model.dto;
 
-import ar.edu.utn.frbb.tup.model.Materia;
-
-import java.util.List;
 
 public class CarreraDto {
     String nombre;
     int departamento;
     int cantidadCuatrimestres;
-    //List<Materia> materiasList;
+
 
     public String getNombre() {
         return nombre;
@@ -34,14 +31,5 @@ public class CarreraDto {
         this.cantidadCuatrimestres = cantidadCuatrimestres;
     }
 
-    /*
-    public List<Materia> getMateriasList() {
-        return materiasList;
-    }
 
-    public void setMateriasList(List<Materia> materiasList) {
-        this.materiasList = materiasList;
-    }
-
-     */
 }

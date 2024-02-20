@@ -31,8 +31,8 @@ public class CarreraController {
     }
 
     @PutMapping("/{idCarrera}")
-    public Carrera actualizarCarrera(@PathVariable int idCarrera, @RequestBody CarreraDto carreraDto) throws CarreraNotFoundException {
-        return carreraService.actualizarCarrera(idCarrera, carreraDto);
+    public void actualizarCarrera(@PathVariable int idCarrera, @RequestBody CarreraDto carreraDto) throws CarreraNotFoundException {
+        carreraService.actualizarCarrera(idCarrera, carreraDto);
     }
 
     @DeleteMapping("/{idCarrera}")
