@@ -33,13 +33,13 @@ public class MateriaServiceImpl implements MateriaService {
         materiaInfoDto.setId(materia.getMateriaId());
         materiaInfoDto.setNombre(materia.getNombre());
         materiaInfoDto.setAnio(materia.getAnio());
-        materiaInfoDto.setCuatrimestre(materia.getCuatrimestre());;
+        materiaInfoDto.setCuatrimestre(materia.getCuatrimestre());
         return materiaInfoDto;
     }
 
     /*
-     * Para la creación de la materia entiendo que el año y los cuatrimestres son independientes, es decir, que chequeo
-     * que la carrera tenga la cantidad de años y que las correlativas tengan un cuatrimestre menor al de la materia acutal
+     * Para la creación de la materia entiendo que el año y los cuatrimestres son independientes, es decir,
+     * el año en el que se cursa con respecto a la carrera y el cuatrimestre en que se cursa con respecto a la carrera.
      */
 
     @Override
@@ -56,31 +56,38 @@ public class MateriaServiceImpl implements MateriaService {
         m.setAnio(materiaDto.getAnio());
         m.setCuatrimestre(materiaDto.getCuatrimestre());
         m.setProfesor(profesorService.buscarProfesor(materiaDto.getProfesorId()));
-        m.setCarrera(carreraService.buscarCarrera(materiaDto.getCarreraId()));
+        m.setCarreraIds(materiaDto.getCarreraIds());
         if (!materiaDto.getCorrelativasIds().isEmpty()){
             for (int idCorrelativa:materiaDto.getCorrelativasIds()){
                 m.agregarCorrelatividad(crearMateriaInfoDto(dao.findById(idCorrelativa)));
             }
         }
-        dao.save(m);
-        carreraService.agregarMateria(materiaDto);
 
+        dao.save(m);
+        if (!materiaDto.getCarreraIds().isEmpty()){
+            for (int carreraId : materiaDto.getCarreraIds()){
+                carreraService.agregarMateriaEnCarrera(carreraId, m.getMateriaId());
+            }
+
+        }
         return m;
     }
 
 
     @Override
-    public void eliminarMateria(int idMateria) throws MateriaNotFoundException {
+    public void eliminarMateria(int idMateria) throws MateriaNotFoundException, CarreraNotFoundException {
         Materia materia = dao.findById(idMateria);
         dao.delete(idMateria);
-        carreraService.eliminarMateria(materia.getNombre());
+        if (!materia.getCarreraIds().isEmpty()){
+            for (int carreraId : materia.getCarreraIds()){
+                carreraService.eliminarMateriaEnCarrera(carreraId, materia.getMateriaId());
+            }
+        }
+
     }
 
-    public void modificarMateria(int id, MateriaDto materiaDto) throws MateriaNotFoundException, CarreraNotFoundException {
-        Materia materia = dao.findById(id);
-
-        // a materiaDto le paso el id de la carrera que tiene materia para las verificaciones.
-        materiaDto.setCarreraId(materia.getCarrera().getCarreraId());
+    public void modificarMateria(int materiaId, MateriaDto materiaDto) throws MateriaNotFoundException, CarreraNotFoundException {
+        Materia materia = dao.findById(materiaId);
 
         //verificaciones de la materiaDto
         if (esCorrelativaDeOtraMateria(materia)) {
@@ -96,6 +103,7 @@ public class MateriaServiceImpl implements MateriaService {
         materia.setAnio(materiaDto.getAnio());
         materia.setCuatrimestre(materiaDto.getCuatrimestre());
         materia.setProfesor(profesorService.buscarProfesor(materiaDto.getProfesorId()));
+        materia.setCarreraIds(materiaDto.getCarreraIds());
         setCorrelativasModificarMateria(materiaDto, materia);
 
         //Verificaciones de la materia
@@ -103,7 +111,7 @@ public class MateriaServiceImpl implements MateriaService {
 
         //Guardar lo modificado
         dao.modificar(materia);
-        carreraService.actualizarMateria(materiaDto);
+        carreraService.actualizarMateriaEnCarrera(materia.getCarreraIds(), materiaId);
     }
 
     //El getMateriaById es para poder acceder a las materias desde el service de otra clase si que accedan al dao de materia
@@ -112,18 +120,20 @@ public class MateriaServiceImpl implements MateriaService {
         return dao.findById(idMateria);
     }
 
-
-    public Materia getMateriaByName(String materiaNombre) throws MateriaNotFoundException {
+    @Override
+    public List<Materia> getMateriaByName(String materiaNombre) throws MateriaNotFoundException {
+        List<Materia> lista = new ArrayList<>();
         for(Materia materia : dao.getAllMaterias().values()){
-            if (Objects.equals(materia.getNombre(), materiaNombre)){
-                return materia;
+            if (materia.getNombre().toLowerCase().contains(materiaNombre.toLowerCase())){
+                lista.add(materia);
             }
         }
-        throw new MateriaNotFoundException("La materia " + materiaNombre + " no existe");
+        if (lista.isEmpty()) throw new MateriaNotFoundException("La materia " + materiaNombre + " no existe");
+        return lista;
     }
 
     @Override
-    public List<Materia> getAllMateriasOrdenadas(String orden) throws MateriaNotFoundException{
+    public List<Materia> getAllMateriasOrdenadas(String orden){
         return switch (orden) {
             case "nombre_asc" -> ordenarPorNombreAsc();
             case "nombre_desc" -> ordenarPorNombreDesc();
@@ -204,16 +214,26 @@ public class MateriaServiceImpl implements MateriaService {
     }
 
     private void validarExistenciaDeCarrera(MateriaDto materiaDto) throws CarreraNotFoundException {
-        carreraService.buscarCarrera(materiaDto.getCarreraId());
+        if (!materiaDto.getCarreraIds().isEmpty()){
+            for (int carreraId : materiaDto.getCarreraIds()){
+                carreraService.buscarCarrera(carreraId);
+            }
+        }
     }
 
     private void validarCoincidenciaCuatrimestresYAnosDeCarrera(MateriaDto materiaDto) throws CarreraNotFoundException {
-        Carrera carrera = carreraService.buscarCarrera(materiaDto.getCarreraId());
+        if (!materiaDto.getCarreraIds().isEmpty()){
+            for (int carreraId : materiaDto.getCarreraIds()){
+                Carrera carrera = carreraService.buscarCarrera(carreraId);
 
-        int annosDeCarrera = carrera.getCantidadCuatrimestres()/2;
-        if (materiaDto.getAnio() < 1 || materiaDto.getAnio() > annosDeCarrera){
-            throw new IllegalArgumentException("La carrera tiene " + annosDeCarrera + " años.");
+                int annosDeCarrera = carrera.getCantidadCuatrimestres()/2;
+                if (materiaDto.getAnio() < 1 || materiaDto.getAnio() > annosDeCarrera){
+                    throw new IllegalArgumentException("La carrera " + carrera.getNombre() +" tiene " + annosDeCarrera + " años.");
+                }
+            }
         }
+
+
     }
 
     private void validarAnioCorrelativasMenorActual(MateriaDto materiaDto) throws MateriaNotFoundException {

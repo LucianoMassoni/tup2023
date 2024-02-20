@@ -1,9 +1,5 @@
 package ar.edu.utn.frbb.tup.model.dto;
 
-import ar.edu.utn.frbb.tup.model.Carrera;
-import ar.edu.utn.frbb.tup.model.Materia;
-import ar.edu.utn.frbb.tup.model.Profesor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +8,7 @@ public class MateriaDto {
     private int anio;
     private int cuatrimestre;
     private int profesorId;
-    private int carreraId;
+    private List<Integer> carreraIds = new ArrayList<>();
     private List<Integer> correlativasIds = new ArrayList<>();
 
     public int getProfesorId() {
@@ -47,11 +43,11 @@ public class MateriaDto {
         this.cuatrimestre = cuatrimestre;
     }
 
-    public int getCarreraId() {
-        return carreraId;
+    public List<Integer> getCarreraIds() {
+        return carreraIds;
     }
-    public void setCarreraId(int carreraId) {
-        this.carreraId = carreraId;
+    public void setCarreraIds(List<Integer> carreraIds) {
+        this.carreraIds = carreraIds;
     }
 
     public List<Integer> getCorrelativasIds() {

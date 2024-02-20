@@ -14,7 +14,7 @@ public class Materia {
     private int cuatrimestre;
     private Profesor profesor;
     private List<MateriaInfoDto> correlatividades = new ArrayList<>();
-    private Carrera carrera;
+    private List<Integer> carreraIds = new ArrayList<>();
 
     public Materia(){}
     public Materia(String nombre, int anio, int cuatrimestre, Profesor profesor) {
@@ -79,12 +79,12 @@ public class Materia {
         this.materiaId = materiaId;
     }
 
-    public Carrera getCarrera() {
-        return carrera;
+    public List<Integer> getCarreraIds() {
+        return carreraIds;
     }
 
-    public void setCarrera(Carrera carrera) {
-        this.carrera = carrera;
+    public void setCarreraIds(List<Integer> carreraIds) {
+        this.carreraIds = carreraIds;
     }
 
     @Override

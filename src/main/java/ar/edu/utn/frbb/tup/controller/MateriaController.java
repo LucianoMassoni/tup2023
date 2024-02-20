@@ -2,21 +2,14 @@ package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Materia;
-import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.exception.CarreraNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("materia")
@@ -36,7 +29,7 @@ public class MateriaController {
     }
 
     @DeleteMapping("/{idMateria}")
-    public void eliminarMateria(@PathVariable int idMateria) throws MateriaNotFoundException {
+    public void eliminarMateria(@PathVariable int idMateria) throws MateriaNotFoundException, CarreraNotFoundException {
         materiaService.eliminarMateria(idMateria);
     }
 
@@ -46,7 +39,7 @@ public class MateriaController {
     }
 
     @GetMapping()
-    public Materia getMateriaByName(@RequestParam(name = "nombre") String unNombre) throws MateriaNotFoundException{
+    public List<Materia> getMateriaByName(@RequestParam(name = "nombre") String unNombre) throws MateriaNotFoundException{
         return materiaService.getMateriaByName(unNombre);
     }
 

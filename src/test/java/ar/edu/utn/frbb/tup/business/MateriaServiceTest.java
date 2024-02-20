@@ -15,8 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +33,33 @@ public class MateriaServiceTest {
     @Mock
     private MateriaDao dao;
 
+    @Test
+    public void testCrearMateriasinCorrelativasNiCarrera() throws CarreraNotFoundException, MateriaNotFoundException {
+        Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
+
+        // Configurar mocks
+        when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
+
+        // Datos de prueba para la MateriaDto
+        MateriaDto materiaDto = new MateriaDto();
+        materiaDto.setNombre("Programacion 1");
+        materiaDto.setAnio(1);
+        materiaDto.setCuatrimestre(2);
+        materiaDto.setProfesorId(12);
+
+
+        // Ejecutar el método a probar
+        Materia resultado = materiaService.crearMateria(materiaDto);
+
+        // Aserts
+        assertNotNull(resultado);
+        assertEquals("Programacion 1", resultado.getNombre());
+        assertEquals(1, resultado.getAnio());
+        assertEquals(2, resultado.getCuatrimestre());
+        assertEquals(profesor, resultado.getProfesor());
+        assertEquals(0, resultado.getCorrelatividades().size());
+    }
 
     @Test
     public void testCrearMateriasinCorrelativas() throws CarreraNotFoundException, MateriaNotFoundException {
@@ -45,10 +70,7 @@ public class MateriaServiceTest {
         // Configurar mocks
         when(carreraService.buscarCarrera(eq(carreraId))).thenReturn(carrera);
         when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
@@ -56,7 +78,7 @@ public class MateriaServiceTest {
         materiaDto.setAnio(1);
         materiaDto.setCuatrimestre(2);
         materiaDto.setProfesorId(12);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
 
 
         // Ejecutar el método a probar
@@ -65,7 +87,7 @@ public class MateriaServiceTest {
         // Aserts
         assertNotNull(resultado);
         assertEquals("Programacion 1", resultado.getNombre());
-        assertEquals(carrera, resultado.getCarrera());
+        assertTrue(resultado.getCarreraIds().contains(carrera.getCarreraId()));
         assertEquals(1, resultado.getAnio());
         assertEquals(2, resultado.getCuatrimestre());
         assertEquals(profesor, resultado.getProfesor());
@@ -85,14 +107,14 @@ public class MateriaServiceTest {
         mCorrelativa1.setAnio(1);
         mCorrelativa1.setCuatrimestre(1);
         mCorrelativa1.setProfesor(profesor);
-        mCorrelativa1.setCarrera(carrera);
+        mCorrelativa1.setCarreraIds(List.of(carreraId));
 
         mCorrelativa2.setMateriaId(2);
         mCorrelativa2.setNombre("lab 1");
         mCorrelativa2.setAnio(1);
         mCorrelativa2.setCuatrimestre(1);
         mCorrelativa2.setProfesor(profesor);
-        mCorrelativa2.setCarrera(carrera);
+        mCorrelativa2.setCarreraIds(List.of(carreraId));
 
         MateriaInfoDto mCorrelativaInfo1 = new MateriaInfoDto(mCorrelativa1.getMateriaId(), mCorrelativa1.getNombre(), mCorrelativa1.getAnio(), mCorrelativa1.getCuatrimestre());
         MateriaInfoDto mCorrelativaInfo2 = new MateriaInfoDto(mCorrelativa2.getMateriaId(), mCorrelativa2.getNombre(), mCorrelativa2.getAnio(), mCorrelativa2.getCuatrimestre());
@@ -102,10 +124,7 @@ public class MateriaServiceTest {
         when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
         when(dao.findById(1)).thenReturn(mCorrelativa1);
         when(dao.findById(2)).thenReturn(mCorrelativa2);
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
@@ -113,7 +132,7 @@ public class MateriaServiceTest {
         materiaDto.setAnio(1);
         materiaDto.setCuatrimestre(2);
         materiaDto.setProfesorId(12);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
         materiaDto.setCorrelativasIds(Arrays.asList(1,2));
 
         // Ejecutar el método a probar
@@ -122,7 +141,7 @@ public class MateriaServiceTest {
         // Aserts
         assertNotNull(resultado);
         assertEquals("Programacion 2", resultado.getNombre());
-        assertEquals(carrera, resultado.getCarrera());
+        assertTrue(resultado.getCarreraIds().contains(carreraId));
         assertEquals(1, resultado.getAnio());
         assertEquals(2, resultado.getCuatrimestre());
         assertEquals(profesor, resultado.getProfesor());
@@ -133,7 +152,7 @@ public class MateriaServiceTest {
     }
 
     @Test
-    public void testCrearMateriaNombreRepetido() throws CarreraNotFoundException, MateriaNotFoundException {
+    public void testCrearMateriaNombreRepetido() throws CarreraNotFoundException {
         int carreraId = 1;
         Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
@@ -142,10 +161,7 @@ public class MateriaServiceTest {
         when(carreraService.buscarCarrera(eq(carreraId))).thenReturn(carrera);
         when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
         when(dao.getAllMaterias()).thenReturn(createMateriasMap());
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
@@ -153,7 +169,7 @@ public class MateriaServiceTest {
         materiaDto.setAnio(1);
         materiaDto.setCuatrimestre(2);
         materiaDto.setProfesorId(12);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
 
 
         // Ejecutar el método a probar
@@ -174,19 +190,14 @@ public class MateriaServiceTest {
         return materias;
     }
 
-
     @Test
     public void testCrearMateriaCarreraInexistente() throws CarreraNotFoundException {
         int carreraId = 1;
         Profesor profesor = new Profesor("Juan Pedro", "Fasola", "seee");
-        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         // Configurar mocks
         when(carreraService.buscarCarrera(eq(carreraId))).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId));
         when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
@@ -194,7 +205,7 @@ public class MateriaServiceTest {
         materiaDto.setAnio(1);
         materiaDto.setCuatrimestre(2);
         materiaDto.setProfesorId(12);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
 
 
         // Ejecutar el método a probar
@@ -211,24 +222,21 @@ public class MateriaServiceTest {
         Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         // Configurar mocks
         when(carreraService.buscarCarrera(eq(carreraId))).thenReturn(carrera);
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
         materiaDto.setNombre("Programacion 1");
         materiaDto.setAnio(4);
         materiaDto.setCuatrimestre(2);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
 
 
         // Ejecutar el método a probar
         IllegalArgumentException exception = assertThrows( IllegalArgumentException.class, () -> materiaService.crearMateria(materiaDto));
 
         // Aserts
-        assertEquals("La carrera tiene 2 años.", exception.getMessage());
+        assertEquals("La carrera TUP tiene 2 años.", exception.getMessage());
 
     }
 
@@ -245,17 +253,14 @@ public class MateriaServiceTest {
         mCorrelativa1.setAnio(1);
         mCorrelativa1.setCuatrimestre(1);
         mCorrelativa1.setProfesor(profesor);
-        mCorrelativa1.setCarrera(carrera);
+        mCorrelativa1.setCarreraIds(List.of(carreraId));
 
         // Configurar mocks
         when(carreraService.buscarCarrera(eq(carreraId))).thenReturn(carrera);
         when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
         when(dao.findById(1)).thenReturn(mCorrelativa1);
         when(dao.findById(eq(correlativaId))).thenThrow(new MateriaNotFoundException("No se encontró la materia con id: "+correlativaId));
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
@@ -263,7 +268,7 @@ public class MateriaServiceTest {
         materiaDto.setAnio(1);
         materiaDto.setCuatrimestre(2);
         materiaDto.setProfesorId(12);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
         materiaDto.setCorrelativasIds(Arrays.asList(1,2));
 
 
@@ -292,16 +297,13 @@ public class MateriaServiceTest {
         mCorrelativa1.setAnio(2);
         mCorrelativa1.setCuatrimestre(1);
         mCorrelativa1.setProfesor(profesor);
-        mCorrelativa1.setCarrera(carrera);
+        mCorrelativa1.setCarreraIds(List.of(carreraId));
         // Configurar mocks
         when(carreraService.buscarCarrera(eq(carreraId))).thenReturn(carrera);
         when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
         when(dao.findById(1)).thenReturn(mCorrelativa1);
 
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
@@ -309,7 +311,7 @@ public class MateriaServiceTest {
         materiaDto.setAnio(1);
         materiaDto.setCuatrimestre(2);
         materiaDto.setProfesorId(12);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
         materiaDto.setCorrelativasIds(List.of(1));
 
 
@@ -332,16 +334,13 @@ public class MateriaServiceTest {
         mCorrelativa1.setAnio(2);
         mCorrelativa1.setCuatrimestre(1);
         mCorrelativa1.setProfesor(profesor);
-        mCorrelativa1.setCarrera(carrera);
+        mCorrelativa1.setCarreraIds(List.of(carreraId));
         // Configurar mocks
         when(carreraService.buscarCarrera(eq(carreraId))).thenReturn(carrera);
         when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
         when(dao.findById(1)).thenReturn(mCorrelativa1);
 
-        when(dao.save(any(Materia.class))).thenAnswer(invocation -> {
-            Materia materia = invocation.getArgument(0);
-            return materia;
-        });
+        when(dao.save(any(Materia.class))).thenAnswer(invocation -> invocation.<Materia>getArgument(0));
 
         // Datos de prueba para la MateriaDto
         MateriaDto materiaDto = new MateriaDto();
@@ -349,7 +348,7 @@ public class MateriaServiceTest {
         materiaDto.setAnio(1);
         materiaDto.setCuatrimestre(2);
         materiaDto.setProfesorId(12);
-        materiaDto.setCarreraId(carreraId);
+        materiaDto.setCarreraIds(List.of(carreraId));
         materiaDto.setCorrelativasIds(List.of(1));
 
 
@@ -361,9 +360,8 @@ public class MateriaServiceTest {
     }
 
     @Test
-    public void testEliminarMateria() throws MateriaNotFoundException {
+    public void testEliminarMateria() throws MateriaNotFoundException, CarreraNotFoundException {
         Materia materia = new Materia();
-        Carrera carrera = new Carrera("TUP", 1, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
 
         materia.setMateriaId(1);
@@ -371,7 +369,6 @@ public class MateriaServiceTest {
         materia.setAnio(2);
         materia.setCuatrimestre(1);
         materia.setProfesor(profesor);
-        materia.setCarrera(carrera);
 
         //mock
         when(dao.findById(1)).thenReturn(materia);
@@ -383,7 +380,6 @@ public class MateriaServiceTest {
         assertEquals(0, dao.getAllMaterias().size());
     }
 
-    //Todo Cuando cambie lo de carreraService cambiar este test por uno que tire el error del dao.delete.
     @Test
     public void testEliminarMateriaInexistente() throws MateriaNotFoundException {
         int materiaId = 1;
@@ -400,10 +396,10 @@ public class MateriaServiceTest {
     @Test
     public void testModificarMateria() throws MateriaNotFoundException, CarreraNotFoundException {
         int materiaId = 1;
-
+        int carreraId = 1;
         Materia materia = new Materia();
 
-        Carrera carrera = new Carrera("TUP", 1, 2, 4);
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
 
         materia.setMateriaId(materiaId);
@@ -411,7 +407,48 @@ public class MateriaServiceTest {
         materia.setAnio(1);
         materia.setCuatrimestre(1);
         materia.setProfesor(profesor);
-        materia.setCarrera(carrera);
+        materia.setCarreraIds(List.of(carreraId));
+
+        //mock
+        when(carreraService.buscarCarrera(eq(1))).thenReturn(carrera);
+        when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
+        when(dao.findById(materiaId)).thenReturn(materia);
+
+        //datos de prueba
+        MateriaDto materiaDto = new MateriaDto();
+        materiaDto.setNombre("Programacion 4");
+        materiaDto.setAnio(2);
+        materiaDto.setCuatrimestre(2);
+        materiaDto.setProfesorId(12);
+        materiaDto.setCarreraIds(List.of(carreraId));
+
+
+        //metodo a probar
+        materiaService.modificarMateria(materiaId, materiaDto);
+
+        //asserts
+        assertEquals("Programacion 4", materia.getNombre());
+        assertEquals(2, materia.getAnio());
+        assertEquals(2, materia.getCuatrimestre());
+        assertEquals(profesor, materia.getProfesor());
+        assertTrue(materia.getCarreraIds().contains(carreraId));
+    }
+
+    @Test
+    public void testModificarMateriaConCarreraASinCarrera() throws MateriaNotFoundException, CarreraNotFoundException {
+        int materiaId = 1;
+        int carreraId = 1;
+        Materia materia = new Materia();
+
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
+        Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
+
+        materia.setMateriaId(materiaId);
+        materia.setNombre("programacion 1");
+        materia.setAnio(1);
+        materia.setCuatrimestre(1);
+        materia.setProfesor(profesor);
+        materia.setCarreraIds(List.of(carreraId));
 
         //mock
         when(carreraService.buscarCarrera(eq(1))).thenReturn(carrera);
@@ -434,16 +471,55 @@ public class MateriaServiceTest {
         assertEquals(2, materia.getAnio());
         assertEquals(2, materia.getCuatrimestre());
         assertEquals(profesor, materia.getProfesor());
+        assertTrue(materia.getCarreraIds().isEmpty());
+    }
+
+    @Test
+    public void testModificarMateriaACarreraInexistente() throws MateriaNotFoundException, CarreraNotFoundException {
+        int materiaId = 1;
+        int carreraId = 1;
+        Materia materia = new Materia();
+
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
+        Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
+
+        materia.setMateriaId(materiaId);
+        materia.setNombre("programacion 1");
+        materia.setAnio(1);
+        materia.setCuatrimestre(1);
+        materia.setProfesor(profesor);
+        materia.setCarreraIds(List.of(carreraId));
+
+        //mock
+        when(carreraService.buscarCarrera(eq(carreraId))).thenReturn(carrera);
+        when(profesorService.buscarProfesor(anyInt())).thenReturn(profesor);
+        when(dao.findById(materiaId)).thenReturn(materia);
+        when(carreraService.buscarCarrera(eq(5))).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: 5"));
+
+        //datos de prueba
+        MateriaDto materiaDto = new MateriaDto();
+        materiaDto.setNombre("Programacion 4");
+        materiaDto.setAnio(2);
+        materiaDto.setCuatrimestre(2);
+        materiaDto.setProfesorId(12);
+        materiaDto.setCarreraIds(List.of(5));
+
+        // Método a probar
+        CarreraNotFoundException exception = assertThrows(CarreraNotFoundException.class, () -> materiaService.modificarMateria(materiaId, materiaDto));
+
+        // Asserts
+        assertEquals("No se encontró una carrera con el id: 5" , exception.getMessage());
+
     }
 
     @Test
     public void testModificarMateriaConCorrelativas() throws CarreraNotFoundException, MateriaNotFoundException {
         int materiaId = 4;
-
+        int carreraId = 1;
         Materia materia = new Materia();
         Materia mCorrelativa1 = new Materia();
         Materia mCorrelativa2 = new Materia();
-        Carrera carrera = new Carrera("TUP", 1, 2, 4);
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
 
         mCorrelativa1.setMateriaId(1);
@@ -451,14 +527,14 @@ public class MateriaServiceTest {
         mCorrelativa1.setAnio(1);
         mCorrelativa1.setCuatrimestre(1);
         mCorrelativa1.setProfesor(profesor);
-        mCorrelativa1.setCarrera(carrera);
+        mCorrelativa1.setCarreraIds(List.of(carreraId));
 
         mCorrelativa2.setMateriaId(2);
         mCorrelativa2.setNombre("lab 1");
         mCorrelativa2.setAnio(1);
         mCorrelativa2.setCuatrimestre(1);
         mCorrelativa2.setProfesor(profesor);
-        mCorrelativa2.setCarrera(carrera);
+        mCorrelativa2.setCarreraIds(List.of(carreraId));
 
         MateriaInfoDto mCorrelativaInfo1 = new MateriaInfoDto(mCorrelativa1.getMateriaId(), mCorrelativa1.getNombre(), mCorrelativa1.getAnio(), mCorrelativa1.getCuatrimestre());
         MateriaInfoDto mCorrelativaInfo2 = new MateriaInfoDto(mCorrelativa2.getMateriaId(), mCorrelativa2.getNombre(), mCorrelativa2.getAnio(), mCorrelativa2.getCuatrimestre());
@@ -468,7 +544,7 @@ public class MateriaServiceTest {
         materia.setAnio(1);
         materia.setCuatrimestre(1);
         materia.setProfesor(profesor);
-        materia.setCarrera(carrera);
+        materia.setCarreraIds(List.of(carreraId));
         materia.setCorrelatividades(new ArrayList<>(List.of(mCorrelativaInfo1, mCorrelativaInfo2)));
 
 
@@ -500,15 +576,13 @@ public class MateriaServiceTest {
         assertTrue(materia.getCorrelatividades().contains(mCorrelativaInfo2));
     }
 
-
-
     @Test
     public void testModificarMateriaCambioDeNombre() throws CarreraNotFoundException, MateriaNotFoundException {
         int materiaId = 4;
-
+        int carreraId = 1;
         Materia materia = new Materia();
         Materia materiaExistente = new Materia();
-        Carrera carrera = new Carrera("TUP", 1, 2, 4);
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
 
         materiaExistente.setMateriaId(1);
@@ -516,7 +590,7 @@ public class MateriaServiceTest {
         materiaExistente.setAnio(1);
         materiaExistente.setCuatrimestre(1);
         materiaExistente.setProfesor(profesor);
-        materiaExistente.setCarrera(carrera);
+        materiaExistente.setCarreraIds(List.of(carreraId));
 
         Map<Integer, Materia> materiasMap = new HashMap<>();
         materiasMap.put(materiaExistente.getMateriaId(), materiaExistente);
@@ -526,7 +600,7 @@ public class MateriaServiceTest {
         materia.setAnio(1);
         materia.setCuatrimestre(1);
         materia.setProfesor(profesor);
-        materia.setCarrera(carrera);
+        materia.setCarreraIds(List.of(carreraId));
 
         //mock
         when(carreraService.buscarCarrera(eq(1))).thenReturn(carrera);
@@ -552,10 +626,11 @@ public class MateriaServiceTest {
     public void testModificarMateriaCambioAnioEnCorrelativa() throws CarreraNotFoundException, MateriaNotFoundException {
         int materiaId = 4;
         int correlativaId = 1;
+        int carreraId = 1;
 
         Materia materia = new Materia();
         Materia correlativa = new Materia();
-        Carrera carrera = new Carrera("TUP", 1, 2, 4);
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
 
         correlativa.setMateriaId(correlativaId);
@@ -563,7 +638,7 @@ public class MateriaServiceTest {
         correlativa.setAnio(1);
         correlativa.setCuatrimestre(1);
         correlativa.setProfesor(profesor);
-        correlativa.setCarrera(carrera);
+        correlativa.setCarreraIds(List.of(carreraId));
 
         MateriaInfoDto correlativaInfoDto = new MateriaInfoDto(correlativa.getMateriaId(), correlativa.getNombre(), correlativa.getAnio(), correlativa.getCuatrimestre());
 
@@ -572,7 +647,7 @@ public class MateriaServiceTest {
         materia.setAnio(1);
         materia.setCuatrimestre(2);
         materia.setProfesor(profesor);
-        materia.setCarrera(carrera);
+        materia.setCarreraIds(List.of(carreraId));
         materia.setCorrelatividades(new ArrayList<>(List.of(correlativaInfoDto)));
 
         Map<Integer, Materia> listaDeMaterias = new HashMap<>();
@@ -603,10 +678,11 @@ public class MateriaServiceTest {
     public void testModificarMateriaCambioCuatrimestreIgualEnCorrelativa() throws CarreraNotFoundException, MateriaNotFoundException {
         int materiaId = 4;
         int correlativaId = 1;
+        int carreraId = 1;
 
         Materia materia = new Materia();
         Materia correlativa = new Materia();
-        Carrera carrera = new Carrera("TUP", 1, 2, 4);
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
 
         correlativa.setMateriaId(correlativaId);
@@ -614,7 +690,7 @@ public class MateriaServiceTest {
         correlativa.setAnio(1);
         correlativa.setCuatrimestre(1);
         correlativa.setProfesor(profesor);
-        correlativa.setCarrera(carrera);
+        correlativa.setCarreraIds(List.of(carreraId));
 
         MateriaInfoDto correlativaInfoDto = new MateriaInfoDto(correlativa.getMateriaId(), correlativa.getNombre(), correlativa.getAnio(), correlativa.getCuatrimestre());
 
@@ -623,7 +699,7 @@ public class MateriaServiceTest {
         materia.setAnio(1);
         materia.setCuatrimestre(2);
         materia.setProfesor(profesor);
-        materia.setCarrera(carrera);
+        materia.setCarreraIds(List.of(carreraId));
         materia.setCorrelatividades(new ArrayList<>(List.of(correlativaInfoDto)));
 
         Map<Integer, Materia> listaDeMaterias = new HashMap<>();
@@ -654,10 +730,11 @@ public class MateriaServiceTest {
     public void testModificarMateriaCambioCuatrimestreMayorEnCorrelativa() throws CarreraNotFoundException, MateriaNotFoundException {
         int materiaId = 4;
         int correlativaId = 1;
+        int carreraId = 1;
 
         Materia materia = new Materia();
         Materia correlativa = new Materia();
-        Carrera carrera = new Carrera("TUP", 1, 2, 4);
+        Carrera carrera = new Carrera("TUP", carreraId, 2, 4);
         Profesor profesor = new Profesor("Juan", "Perez", "ing. Informatica");
 
         correlativa.setMateriaId(correlativaId);
@@ -665,7 +742,7 @@ public class MateriaServiceTest {
         correlativa.setAnio(1);
         correlativa.setCuatrimestre(1);
         correlativa.setProfesor(profesor);
-        correlativa.setCarrera(carrera);
+        correlativa.setCarreraIds(List.of(carreraId));
 
         MateriaInfoDto correlativaInfoDto = new MateriaInfoDto(correlativa.getMateriaId(), correlativa.getNombre(), correlativa.getAnio(), correlativa.getCuatrimestre());
 
@@ -674,7 +751,7 @@ public class MateriaServiceTest {
         materia.setAnio(1);
         materia.setCuatrimestre(2);
         materia.setProfesor(profesor);
-        materia.setCarrera(carrera);
+        materia.setCarreraIds(List.of(carreraId));
         materia.setCorrelatividades(new ArrayList<>(List.of(correlativaInfoDto)));
 
         Map<Integer, Materia> listaDeMaterias = new HashMap<>();
@@ -716,14 +793,47 @@ public class MateriaServiceTest {
         when(dao.getAllMaterias()).thenReturn(materiaMap);
 
         //Metodo a probar
-        Materia resultado = materiaService.getMateriaByName(nombre);
+        List<Materia> lista = new ArrayList<>(materiaService.getMateriaByName(nombre));
+
 
         //Asserts
-        assertEquals(resultado, materia);
+        assertTrue(lista.contains(materia));
     }
 
     @Test
-    public void testGetMateriaByNameError() throws MateriaNotFoundException {
+    public void testGetMateriaByNameNombreParcial() throws MateriaNotFoundException {
+        Materia materia1 = new Materia();
+        Materia materia2 = new Materia();
+        Materia materia3 = new Materia();
+
+        materia1.setMateriaId(1);
+        materia1.setNombre("Programacion 1");
+
+        materia2.setMateriaId(2);
+        materia2.setNombre("programacion 2");
+
+        materia3.setMateriaId(3);
+        materia3.setNombre("matematica");
+
+        Map<Integer, Materia> materiaMap = new HashMap<>();
+        materiaMap.put(materia1.getMateriaId(), materia1);
+        materiaMap.put(materia2.getMateriaId(), materia2);
+        materiaMap.put(materia3.getMateriaId(), materia3);
+        //Mock
+        when(dao.getAllMaterias()).thenReturn(materiaMap);
+
+        //Metodo a probar
+        List<Materia> lista = new ArrayList<>(materiaService.getMateriaByName("progr"));
+
+
+        //Asserts
+        assertTrue(lista.contains(materia1));
+        assertTrue(lista.contains(materia2));
+        assertFalse(lista.contains(materia3));
+    }
+
+    @Test
+    public void testGetMateriaByNameError() {
         int materiaId = 1;
         String nombre = "Programacion 1";
         Materia materia = new Materia();

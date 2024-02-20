@@ -1,7 +1,8 @@
-package ar.edu.utn.frbb.tup.persistence;
+package ar.edu.utn.frbb.tup.persistence.impl;
 
 
 import ar.edu.utn.frbb.tup.model.Asignatura;
+import ar.edu.utn.frbb.tup.persistence.AsignaturaDao;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import org.springframework.stereotype.Component;
 
