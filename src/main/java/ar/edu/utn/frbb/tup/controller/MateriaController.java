@@ -43,7 +43,6 @@ public class MateriaController {
         return materiaService.getMateriaByName(unNombre);
     }
 
-    //Esta anda pero la ruta debe ser materia/materias?orden={orden}
     @GetMapping("/materias")
     public List<Materia> getAllMateriasOrdenadas(@RequestParam(name = "orden") String orden) throws MateriaNotFoundException, ResponseStatusException {
         return materiaService.getAllMateriasOrdenadas(orden);

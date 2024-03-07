@@ -15,17 +15,26 @@ import java.util.Random;
 @Service
 public class AlumnoDaoMemoryImpl implements AlumnoDao {
 
-    private static Map<Integer, Alumno> repositorioAlumnos = new HashMap<>();
+    private static final Map<Integer, Alumno> repositorioAlumnos = new HashMap<>();
 
     @Override
-    public Alumno saveAlumno(Alumno alumno) {
-        Random random = new Random();
-        alumno.setId(random.nextInt());
-        return repositorioAlumnos.put(alumno.getId(), alumno);
+    public Alumno save(Alumno alumno) {
+        Random r = new Random();
+        int random;
+
+        do {
+            random = r.nextInt();
+            if (random < 0) random *= -1;
+        }while (repositorioAlumnos.containsKey(random));
+
+        alumno.setId(random);
+        repositorioAlumnos.put(alumno.getId(), alumno);
+
+        return alumno;
     }
 
     @Override
-    public Alumno findAlumno(Integer id) throws AlumnoNotFoundException {
+    public Alumno findById(Integer id) throws AlumnoNotFoundException {
         for (Alumno a: repositorioAlumnos.values()) {
             if (a.getId() == id){
                 return a;
@@ -35,25 +44,24 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     }
 
     @Override
-    public void deleteAlumno(Integer idAlumno){
+    public void delete(Integer idAlumno) throws AlumnoNotFoundException {
         for (Alumno a: repositorioAlumnos.values()) {
             if (a.getId() == idAlumno){
                 repositorioAlumnos.remove(idAlumno);
             }
         }
+        throw new AlumnoNotFoundException("No se encontró un alumno con el id: " + idAlumno);
     }
 
     @Override
-    public Alumno loadAlumno(Integer id) {
-        return repositorioAlumnos.getOrDefault(id, null);
-    }
-
-    @Override
-    public Alumno actualizarAlumno(Alumno a) throws AlumnoNotFoundException {
-        if (findAlumno(a.getId()) == null)
-            return null;
-        else {
-            return repositorioAlumnos.put(a.getId(),a);
+    public void actualizar(Alumno alumno) throws AlumnoNotFoundException {
+        if (!repositorioAlumnos.containsValue(alumno)){
+            throw new AlumnoNotFoundException("No existe el alumno");
         }
+        repositorioAlumnos.replace(alumno.getId(), alumno);
+    }
+
+    public Map<Integer, Alumno> getAllAlunno(){
+        return repositorioAlumnos;
     }
 }

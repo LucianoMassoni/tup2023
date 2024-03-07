@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class CarreraServiceImpl implements CarreraService {
@@ -40,13 +41,15 @@ public class CarreraServiceImpl implements CarreraService {
     public void actualizarCarrera(int id, CarreraDto carreraDto) throws CarreraNotFoundException {
         Carrera c = carreraDao.load(id);
 
-        validarNombreUnico(carreraDto);
         validarDepartamento(carreraDto);
         validarCuatrimestres(carreraDto);
 
         c.setNombre(carreraDto.getNombre());
         c.setDepartamento(carreraDto.getDepartamento());
         c.setCantidadCuatrimestres(carreraDto.getCantidadCuatrimestres());
+
+        validarNombreUnicoEnCarreras(c);
+
         carreraDao.actualizar(id, c);
     }
 
@@ -69,6 +72,15 @@ public class CarreraServiceImpl implements CarreraService {
             if (carreraDto.getNombre().equalsIgnoreCase(carrera.getNombre())){
                 throw new IllegalArgumentException("Ya existe una carrera con el nombre " + carrera.getNombre());
             }
+        }
+    }
+
+    private void validarNombreUnicoEnCarreras(Carrera carrera){
+        for (Carrera c : carreraDao.getAll().values()){
+            if (Objects.equals(c.getNombre().toLowerCase(), carrera.getNombre().toLowerCase()) && (c.getCarreraId() != carrera.getCarreraId())){
+                throw new IllegalArgumentException("Ya existe una carrera con el nombre " + carrera.getNombre());
+            }
+
         }
     }
 

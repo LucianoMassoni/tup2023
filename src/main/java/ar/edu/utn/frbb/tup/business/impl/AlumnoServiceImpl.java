@@ -6,14 +6,12 @@ import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
-import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
 import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
 import ar.edu.utn.frbb.tup.model.dto.MateriaInfoDto;
 import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import ar.edu.utn.frbb.tup.persistence.AlumnoDao;
-import ar.edu.utn.frbb.tup.persistence.AlumnoDaoMemoryImpl;
 import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
@@ -22,8 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 
 @Component
 public class AlumnoServiceImpl implements AlumnoService {
@@ -31,140 +27,125 @@ public class AlumnoServiceImpl implements AlumnoService {
     private AlumnoDao alumnoDao;
     @Autowired
     private AsignaturaService asignaturaService;
+    @Autowired
+    private MateriaService materiaService;
+
 
     @Override
-    public Alumno crearAlumno(AlumnoDto alumno) throws MateriaNotFoundException {
-        Alumno a = new Alumno();
-        a.setNombre(alumno.getNombre());
-        a.setApellido(alumno.getApellido());
-        a.setDni(alumno.getDni());
-        Random random = new Random();
-        a.setId(random.nextInt());
-        if (alumno.getIdMateriasDeAsignatura() != null){
-            for (Integer idMateria:alumno.getIdMateriasDeAsignatura()){
-                a.addAsignatura(asignaturaService.crearAsignatura(idMateria));
+    public Alumno crearAlumno(AlumnoDto alumnoDto) throws MateriaNotFoundException {
+        List<Asignatura> listaDeAsignaturas = new ArrayList<>();
+
+        validarExistenciaDeMateriasIds(alumnoDto.getIdMateriasDeAsignatura());
+        validarCorrectoDni(alumnoDto.getDni());
+        validarUnicoDni(alumnoDto.getDni());
+
+        Alumno alumno = new Alumno();
+        alumno.setNombre(alumnoDto.getNombre());
+        alumno.setApellido(alumnoDto.getApellido());
+        alumno.setDni(alumnoDto.getDni());
+        if (alumnoDto.getIdMateriasDeAsignatura() != null){
+            for (Integer idMateria:alumnoDto.getIdMateriasDeAsignatura()){
+                listaDeAsignaturas.add(asignaturaService.crearAsignatura(idMateria));
             }
         }
+        for (Asignatura asignatura:listaDeAsignaturas){
+            alumno.getAsignaturasIds().add(asignatura.getId());
+        }
 
-        alumnoDao.saveAlumno(a);
-        return a;
+        alumnoDao.save(alumno);
+        return alumno;
     }
 
     @Override
     public Alumno buscarAlumno(int id) throws AlumnoNotFoundException {
-        return alumnoDao.findAlumno(id);
+        return alumnoDao.findById(id);
     }
     @Override
-    public void eliminarAlumno(int alumnoId) throws AsignaturaNotFoundException {
-        Alumno alumno = alumnoDao.loadAlumno(alumnoId);
-        if (alumno.getAsignaturas() != null){
-            for (Asignatura a: alumno.getAsignaturas()){
-                asignaturaService.eliminarAsignatura(a.getId());
-            }
-        }
-        alumnoDao.deleteAlumno(alumnoId);
+    public void eliminarAlumno(int alumnoId) throws AlumnoNotFoundException {
+        alumnoDao.delete(alumnoId);
     }
 
+    @Override
+    public void actualizarAlumno(int alumnoId, AlumnoDto alumnoDto) throws AlumnoNotFoundException, MateriaNotFoundException, AsignaturaNotFoundException {
+        validarCorrectoDni(alumnoDto.getDni());
+        validarUnicoDniEnActualizar(alumnoId, alumnoDto.getDni());
+        validarExistenciaDeMateriasIds(alumnoDto.getIdMateriasDeAsignatura());
 
-    //ToDo no actualiza los datos de las asignaturas
-    // NO ANDA
-    public Alumno actualizarAlumno(AlumnoDto alumnoDto) throws MateriaNotFoundException, AsignaturaNotFoundException, AlumnoNotFoundException {
-        Alumno alumno = alumnoDao.loadAlumno(alumnoDto.getDni());
-        alumno.setNombre(alumnoDto.getNombre());
+        Alumno alumno = alumnoDao.findById(alumnoId);
+        alumno.setNombre(alumno.getNombre());
         alumno.setApellido(alumnoDto.getApellido());
         alumno.setDni(alumnoDto.getDni());
-
-        if (alumnoDto.getIdMateriasDeAsignatura() != null) {
-            List<Asignatura> nuevasAsignaturas = new ArrayList<>();
-
-            for (Integer idMateria : alumnoDto.getIdMateriasDeAsignatura()) {
-                // Si la asignatura no está en la lista actual del alumno, la creamos y la añadimos
-                if (alumno.getAsignaturas().stream().noneMatch(asignatura -> Objects.equals(asignatura.getMateria().getMateriaId(), idMateria))) {
-                    nuevasAsignaturas.add(asignaturaService.crearAsignatura(idMateria));
-                }
-            }
-            alumno.getAsignaturas().addAll(nuevasAsignaturas);
-        }
-
-
-        List<Asignatura> asignaturasAEliminar = new ArrayList<>();
-
-        for (Asignatura asignatura:alumno.getAsignaturas()){
-            if (!(alumnoDto.getIdMateriasDeAsignatura().contains(asignatura.getMateria().getMateriaId()))){
-                asignaturasAEliminar.add(asignatura);
-            }
-        }
-        alumno.getAsignaturas().removeAll(asignaturasAEliminar);
-
-        for (Asignatura asignatura : asignaturasAEliminar) {
-            asignaturaService.eliminarAsignatura(asignatura.getId());
-        }
-
-        alumno = alumnoDao.actualizarAlumno(alumno);
-
-        return alumno;
-    }
-    @Override
-    public void aprobarAsignatura(int idAlumno, int idAsignatura, AsignaturaDto asignaturaDto) throws EstadoIncorrectoException, CorrelatividadesNoAprobadasException, AsignaturaNotFoundException {
-        Asignatura a = asignaturaService.getAsignatura(idAsignatura);
-        for (MateriaInfoDto m: a.getMateria().getCorrelatividades()) {
-            Asignatura correlativa = asignaturaService.getAsignatura(idAsignatura);
-            if (!EstadoAsignatura.APROBADA.equals(correlativa.getEstado())) {
-                throw new CorrelatividadesNoAprobadasException("La materia " + m.getNombre() + " debe estar aprobada para aprobar " + a.getNombreAsignatura());
-            }
-        }
-        a.aprobarAsignatura(asignaturaDto.getNota());
-        asignaturaService.actualizarAsignatura(a);
-        Alumno alumno = alumnoDao.loadAlumno(idAlumno);
-        alumno.actualizarAsignatura(a);
-        alumnoDao.saveAlumno(alumno);
+        setAsignaturasEnActualizarAlumno(alumno, alumnoDto);
     }
 
-
-    // Todo como le cambie la lista de correlativas a materia por materiaDtoInfo debo encontrar la forma obtener la asignatura con el id de la materia.
-    @Override
-    public Alumno aprobar(Alumno alumno, Asignatura asignatura, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException, MateriaNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException {
-        //Chequea si la asignatura que paso esta cursada para poder aprobar.
-        if (asignatura.getEstado().equals(EstadoAsignatura.APROBADA)){
-            throw new EstadoIncorrectoException("La asignatura " + asignatura.getNombreAsignatura() + " ya esta aprobada");
-        } else if (asignatura.getEstado().equals(EstadoAsignatura.NO_CURSADA)){
-            throw new EstadoIncorrectoException("La asignatura " + asignatura.getNombreAsignatura() + " debe estar cursada para poder aprobar");
-        }
-
-        //En caso de que esté cursada se toma la lista de asignaturas de materias correlativas para ver el estado de estas.
-        if (asignaturaService.getListaAsignaturasDeMateriasCorrelativas(asignatura.getId(), asignatura.getMateria().getMateriaId()) == null){
-            asignatura.aprobarAsignatura(asignaturaDto.getNota());
-        } else {
-            for (Asignatura asignaturaCorrelativa: asignaturaService.getListaAsignaturasDeMateriasCorrelativas(asignatura.getId(), asignatura.getMateria().getMateriaId())){
-                if (asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.NO_CURSADA)){
-                    throw new EstadoIncorrectoException("No cursó la asignatura: " + asignaturaCorrelativa.getNombreAsignatura());
-                } else if (asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.CURSADA)) {
-                    throw new EstadoIncorrectoException("La asignatura " + asignaturaCorrelativa.getNombreAsignatura() + " no está aprobada");
-                }
-            }
-        }
-        asignatura.setEstado(asignaturaDto.getEstadoAsignatura());
-        asignatura.setNota(asignaturaDto.getNota());
-        asignaturaService.actualizarAsignatura(asignatura);
-        //Aca deberia ver si debo actualizar alumno
-
-        return alumno;
-    }
     /*
-    public void cursarAsignatura(int idAlumno, int idAsignatura, AsignaturaDto asignaturaDto){
+        ----------------------------------- Funciones para crear y actualizar ----------------------------------------
+     */
+    private void setAsignaturasEnActualizarAlumno(Alumno alumno, AlumnoDto alumnoDto) throws MateriaNotFoundException, AsignaturaNotFoundException {
+        if (alumnoDto.getIdMateriasDeAsignatura().isEmpty()){
+            alumno.setAsignaturasIds(new ArrayList<>());
+            return;
+        }
+        List<Asignatura> nuevasAsignaturas = new ArrayList<>();
+        List<Integer> idMateriasNuevasAsignaturas = new ArrayList<>();
+        List<Integer> idsAsignaturas = new ArrayList<>();
 
+        //agrego las que coinciden
+        for (int asignaturaId : alumno.getAsignaturasIds()){
+            Asignatura asignatura = asignaturaService.getAsignatura(asignaturaId);
+            if (alumnoDto.getIdMateriasDeAsignatura().contains(asignatura.getMateria().getMateriaId())){
+                nuevasAsignaturas.add(asignatura);
+                idMateriasNuevasAsignaturas.add(asignatura.getMateria().getMateriaId());
+            }
+        }
+
+        //agrego las de alumnoDto que no coinciden
+        for (int materiaId : alumnoDto.getIdMateriasDeAsignatura()){
+            if (!idMateriasNuevasAsignaturas.contains(materiaId)){
+                nuevasAsignaturas.add(asignaturaService.crearAsignatura(materiaId));
+            }
+        }
+
+        for (Asignatura asignatura : nuevasAsignaturas){
+            idsAsignaturas.add(asignatura.getId());
+        }
+        //Reemplazo las asignaturas.
+        alumno.setAsignaturasIds(idsAsignaturas);
     }
 
+
+    private void validarExistenciaDeMateriasIds(List<Integer> materiasIds) throws MateriaNotFoundException {
+        for (int materiaId:materiasIds){
+            materiaService.getMateriaById(materiaId);
+        }
+    }
+
+    private void validarCorrectoDni(int dni){
+        if (dni < 0)
+            throw new IllegalArgumentException("El dni no puede ser negativo");
+        if (dni < 10000000 || dni > 99999999)
+            throw new IllegalArgumentException("El dni debe tener 8 digitos");
+    }
+
+    private void validarUnicoDni(int dni){
+        for (Alumno alumno:alumnoDao.getAllAlunno().values()){
+            if (alumno.getDni()==dni){
+                throw new IllegalArgumentException("Ya existe un alumno con DNI: " + dni);
+            }
+        }
+    }
+
+    private void validarUnicoDniEnActualizar(int alumnoId, int dni){
+        for (Alumno alumno:alumnoDao.getAllAlunno().values()){
+            if (alumno.getDni() == dni && alumno.getId() != alumnoId){
+                throw new IllegalArgumentException("Ya existe un alumno con DNI: " + dni);
+            }
+        }
+    }
+
+    /*
+        ----------------------------------- Funciones de Asignatura desde Alumno ------------------------------------
      */
 
-    public Alumno cambiarEstadoAsignatura(int idAlumno, int idAsignatura, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException, AsignaturaNotFoundException, MateriaNotFoundException, EstadoIncorrectoException {
-        Alumno alumno = alumnoDao.findAlumno(idAlumno);
-        Asignatura asignatura = asignaturaService.getAsignatura(idAsignatura);
-        if (asignaturaDto.getEstadoAsignatura().equals(EstadoAsignatura.CURSADA)){
-            return alumnoDao.findAlumno(idAlumno);
-        } else if (asignaturaDto.getEstadoAsignatura().equals(EstadoAsignatura.APROBADA)){
-            return aprobar(alumno, asignatura, asignaturaDto);
-        }
-        throw new EstadoIncorrectoException("si llegas a leer esto es de cambiarEstadoAsignatura");
-    }
+
 }

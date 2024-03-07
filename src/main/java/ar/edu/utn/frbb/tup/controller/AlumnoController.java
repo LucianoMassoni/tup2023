@@ -35,9 +35,10 @@ public class AlumnoController {
     }
 
     @PutMapping("/{idAlumno}")
-    public Alumno modificarAlumno(@RequestBody AlumnoDto alumnoDto) throws MateriaNotFoundException, AsignaturaNotFoundException, AlumnoNotFoundException {
-        return alumnoService.actualizarAlumno(alumnoDto);
+    public void modificarAlumno(@PathVariable int idAlumno, @RequestBody AlumnoDto alumnoDto) throws AlumnoNotFoundException, MateriaNotFoundException, AsignaturaNotFoundException {
+        alumnoService.actualizarAlumno(idAlumno, alumnoDto);
     }
+
     @GetMapping("/{idAlumno}")
     public Alumno buscarAlumno(@PathVariable int idAlumno) throws AlumnoNotFoundException {
        return alumnoService.buscarAlumno(idAlumno);
@@ -45,9 +46,11 @@ public class AlumnoController {
 
 
     //ToDo me parece que deberia de pasar una asignatura dto, asi no se puede cambiar el id o la materia, y solo cambiar el estado y dar la nota
+    /*
     @PutMapping("/{idAlumno}/asignatura/{idAsignatura}")
     public Alumno cambiarEstadoAsignatura(@PathVariable int idAlumno, @PathVariable int idAsignatura, @RequestBody AsignaturaDto asignatura) throws AsignaturaNotFoundException, AlumnoNotFoundException, MateriaNotFoundException, EstadoIncorrectoException {
         return alumnoService.cambiarEstadoAsignatura(idAlumno, idAsignatura, asignatura);
     }
+     */
 
 }

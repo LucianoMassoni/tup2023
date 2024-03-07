@@ -4,15 +4,17 @@ import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.DaoException;
 
+import java.util.Map;
+
 public interface AlumnoDao {
 
-    Alumno saveAlumno(Alumno a);
+    Alumno save(Alumno a);
 
-    Alumno findAlumno(Integer id) throws AlumnoNotFoundException;
+    Alumno findById(Integer id) throws AlumnoNotFoundException;
 
-    Alumno loadAlumno(Integer id);
+    void actualizar(Alumno a) throws AlumnoNotFoundException;
 
-    Alumno actualizarAlumno(Alumno a) throws AlumnoNotFoundException;
+    void delete(Integer id) throws AlumnoNotFoundException;
 
-    void deleteAlumno(Integer id);
+    Map<Integer, Alumno> getAllAlunno();
 }

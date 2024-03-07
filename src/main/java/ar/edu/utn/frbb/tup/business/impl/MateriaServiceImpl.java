@@ -26,7 +26,6 @@ public class MateriaServiceImpl implements MateriaService {
     private CarreraService carreraService;
 
 
-
     private MateriaInfoDto crearMateriaInfoDto(Materia materia){
         MateriaInfoDto materiaInfoDto = new MateriaInfoDto();
 
@@ -68,7 +67,6 @@ public class MateriaServiceImpl implements MateriaService {
             for (int carreraId : materiaDto.getCarreraIds()){
                 carreraService.agregarMateriaEnCarrera(carreraId, m.getMateriaId());
             }
-
         }
         return m;
     }
@@ -83,7 +81,6 @@ public class MateriaServiceImpl implements MateriaService {
                 carreraService.eliminarMateriaEnCarrera(carreraId, materia.getMateriaId());
             }
         }
-
     }
 
     public void modificarMateria(int materiaId, MateriaDto materiaDto) throws MateriaNotFoundException, CarreraNotFoundException {
@@ -232,8 +229,6 @@ public class MateriaServiceImpl implements MateriaService {
                 }
             }
         }
-
-
     }
 
     private void validarAnioCorrelativasMenorActual(MateriaDto materiaDto) throws MateriaNotFoundException {
