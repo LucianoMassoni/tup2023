@@ -7,9 +7,6 @@ public class AlumnoDto {
     String nombre;
     String apellido;
     int dni;
-
-    //ToDo esta lista puede ser de AsignaturaDto asi cuando creo las materias despues puedo buscarlas por id dentro del dto.
-    // o puede ser una lista de ids de las materias a las que pertenecen las asignaturas y las asignaturas se crean a partir de eso./ idMateriaDeAsignatura
     List<Integer> idMateriasDeAsignatura = new ArrayList<>();
 
     public String getNombre() {

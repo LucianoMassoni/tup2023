@@ -148,4 +148,59 @@ public class AlumnoServiceImpl implements AlumnoService {
      */
 
 
+
+    @Override
+    public void cambiarEstadoAsignatura(int alumnoId, int asignaturaId, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException {
+        Alumno alumno = alumnoDao.findById(alumnoId);
+
+        verificarExistenciaAsignatura(asignaturaId);
+        verificarAsignaturaCorrespondeAAlumno(asignaturaId, alumno);
+
+        switch (asignaturaDto.getEstadoAsignatura()) {
+            case APROBADA -> aprobarAsignatura(alumno, asignaturaId, asignaturaDto);
+            case CURSADA -> cursarAsignatura(alumno, asignaturaId);
+            case NO_CURSADA -> perderCursadaAsignatura(alumno, asignaturaId);
+        }
+    }
+
+
+    private void aprobarAsignatura(Alumno alumno, int asignaturaId, AsignaturaDto asignaturaDto) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        asignaturaService.verificarCorrelativasEstenAprobadas(asignaturaId, alumno.getAsignaturasIds());
+        asignaturaService.verificarNotaCorrecta(asignaturaDto.getNota());
+
+        Asignatura asignatura = asignaturaService.getAsignatura(asignaturaId);
+        asignatura.setEstado(asignaturaDto.getEstadoAsignatura());
+        asignatura.setNota(asignaturaDto.getNota());
+
+        asignaturaService.actualizarAsignatura(asignatura);
+    }
+
+    private void cursarAsignatura(Alumno alumno, int asignaturaId) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        asignaturaService.verificarCorrelativasEstenCursadas(asignaturaId, alumno.getAsignaturasIds());
+
+        Asignatura asignatura = asignaturaService.getAsignatura(asignaturaId);
+        asignatura.setEstado(EstadoAsignatura.CURSADA);
+
+        asignaturaService.actualizarAsignatura(asignatura);
+    }
+
+    private void perderCursadaAsignatura(Alumno alumno, int asignaturaId) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        asignaturaService.verificarAsignaturasParaPerderCursada(asignaturaId, alumno.getAsignaturasIds());
+
+        Asignatura asignatura = asignaturaService.getAsignatura(asignaturaId);
+        asignatura.setEstado(EstadoAsignatura.NO_CURSADA);
+
+        asignaturaService.actualizarAsignatura(asignatura);
+    }
+
+    private void verificarExistenciaAsignatura(int asignaturaId) throws AsignaturaNotFoundException {
+        asignaturaService.getAsignatura(asignaturaId);
+    }
+
+    private void verificarAsignaturaCorrespondeAAlumno(int asignaturaId, Alumno alumno) throws AsignaturaNotFoundException {
+        if (!alumno.getAsignaturasIds().contains(asignaturaId)){
+            throw new AsignaturaNotFoundException("El alumno no tiene una asignatura con id: " + asignaturaId);
+        }
+    }
+
 }

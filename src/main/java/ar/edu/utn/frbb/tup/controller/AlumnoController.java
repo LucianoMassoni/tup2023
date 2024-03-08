@@ -44,13 +44,11 @@ public class AlumnoController {
        return alumnoService.buscarAlumno(idAlumno);
     }
 
-
-    //ToDo me parece que deberia de pasar una asignatura dto, asi no se puede cambiar el id o la materia, y solo cambiar el estado y dar la nota
-    /*
     @PutMapping("/{idAlumno}/asignatura/{idAsignatura}")
-    public Alumno cambiarEstadoAsignatura(@PathVariable int idAlumno, @PathVariable int idAsignatura, @RequestBody AsignaturaDto asignatura) throws AsignaturaNotFoundException, AlumnoNotFoundException, MateriaNotFoundException, EstadoIncorrectoException {
-        return alumnoService.cambiarEstadoAsignatura(idAlumno, idAsignatura, asignatura);
+    public void cambiarEstadoAsignatura(@PathVariable int idAlumno, @PathVariable int idAsignatura, @RequestBody AsignaturaDto asignaturaDto) throws AsignaturaNotFoundException, AlumnoNotFoundException, EstadoIncorrectoException {
+         alumnoService.cambiarEstadoAsignatura(idAlumno, idAsignatura, asignaturaDto);
     }
-     */
+    //Todo: Creo que no hay forma de ver si se cambió el estado de la asignatura
+    // agregar un get "/{idAlumno}/asignatura/{idAsignatura}". o algo por el estilo???
 
 }

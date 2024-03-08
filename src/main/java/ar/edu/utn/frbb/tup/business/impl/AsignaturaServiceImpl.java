@@ -1,28 +1,20 @@
 package ar.edu.utn.frbb.tup.business.impl;
 
-import ar.edu.utn.frbb.tup.business.AlumnoService;
 import ar.edu.utn.frbb.tup.business.AsignaturaService;
 import ar.edu.utn.frbb.tup.business.MateriaService;
-import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.MateriaInfoDto;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
-import ar.edu.utn.frbb.tup.persistence.AlumnoDao;
-import ar.edu.utn.frbb.tup.persistence.AlumnoDaoMemoryImpl;
 import ar.edu.utn.frbb.tup.persistence.AsignaturaDao;
-import ar.edu.utn.frbb.tup.persistence.AsignaturaDaoMemoryImpl;
-import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
-import ar.edu.utn.frbb.tup.persistence.exception.DaoException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 @Component
@@ -36,6 +28,7 @@ public class AsignaturaServiceImpl implements AsignaturaService {
     public Asignatura crearAsignatura(int materiaId) throws MateriaNotFoundException {
         Materia materia = materiaService.getMateriaById(materiaId);
         Asignatura a = new Asignatura(materia);
+        Random r = new Random();
         asignaturaDao.save(a);
         return a;
     }
@@ -46,45 +39,12 @@ public class AsignaturaServiceImpl implements AsignaturaService {
 
     @Override
     public Asignatura getAsignatura(int idAsignatura) throws AsignaturaNotFoundException {
-        List<Asignatura> listaAsignaturas = asignaturaDao.getAllAsignaturas().stream().toList();
-        for (Asignatura asignatura:listaAsignaturas){
-            if (Objects.equals(idAsignatura, asignatura.getId())){
-                return asignatura;
-            }
-        }
-        throw new AsignaturaNotFoundException("No se encontro una asignatura");
+        return asignaturaDao.findById(idAsignatura);
     }
-
-    //Todo podria hacer un getAsignaturaByMateriaIdYAlumnoId??? deberia de tener dos service de materia y alumno?
-    // de alumno no creo porque en alumno service ya tengo asignatura service.
-
-    public List<Materia> getListaMateriasCorrelativasByIdAsignaturaYIdMateria(int idAsignatura, int idMateria) throws MateriaNotFoundException, AsignaturaNotFoundException {
-        List<Materia> materiasCorrelativas = new ArrayList<>();
-        Asignatura asignatura = getAsignatura(idAsignatura);
-        for (MateriaInfoDto m:asignatura.getMateria().getCorrelatividades()){
-            if (Objects.equals(m.getId(), idMateria)){
-                materiasCorrelativas.add(materiaService.getMateriaById(idMateria));
-            }
-        }
-        return materiasCorrelativas;
-    }
-
-    public List<Asignatura> getListaAsignaturasDeMateriasCorrelativas(int idAsignatura, int idMateria) throws MateriaNotFoundException, AsignaturaNotFoundException {
-        List<Asignatura> listaAsignaturasCorrelativas = new ArrayList<>();
-        for (Asignatura asignatura:asignaturaDao.getAllAsignaturas()){
-            for (Materia materia:getListaMateriasCorrelativasByIdAsignaturaYIdMateria(idAsignatura, idMateria)){
-                if (Objects.equals(materia.getMateriaId(), asignatura.getMateria().getMateriaId())){
-                    listaAsignaturasCorrelativas.add(asignatura);
-                }
-            }
-        }
-        return listaAsignaturasCorrelativas;
-    }
-
 
     @Override
     public List<Asignatura> getAllAsignaturas() {
-        return asignaturaDao.getAllAsignaturas();
+        return asignaturaDao.getAllAsignaturas().values().stream().toList();
     }
 
     @Override
@@ -92,5 +52,101 @@ public class AsignaturaServiceImpl implements AsignaturaService {
         asignaturaDao.actualizar(a);
     }
 
+    //----------------------------------------------------------------------------------------------------------------
 
+    private List<Asignatura> getListaDeAsignaturasCorrelativas(Asignatura asignatura, List<Integer> listaIdsAsignaturasDelAlumno) throws AsignaturaNotFoundException {
+        List<Asignatura> listaAsignaturasDelAlumno = new ArrayList<>();
+        List<Asignatura> listaAsignaturasCorrelativas = new ArrayList<>();
+        ;
+        //Lleno la lista de asignaturas del alumno
+        for (int asignaturaId : listaIdsAsignaturasDelAlumno) {
+            listaAsignaturasDelAlumno.add(asignaturaDao.findById(asignaturaId));
+        }
+
+        // Recorro la lista de materiasCorrelativas de la asignatura en cuestion y me fijo si coincide el id con la materia de las
+        // asignaturas del alumno. Lo pongo en listaAsignaturaCorrelativa.
+        for (MateriaInfoDto materiaCorrelativa : asignatura.getMateria().getCorrelatividades()) {
+            for (Asignatura asignaturaDeAlumno : listaAsignaturasDelAlumno) {
+                if (asignaturaDeAlumno.getMateria().getMateriaId() == materiaCorrelativa.getId()) {
+                    listaAsignaturasCorrelativas.add(asignaturaDeAlumno);
+                }
+            }
+        }
+
+        return listaAsignaturasCorrelativas;
+    }
+
+    private List<Asignatura> getListaDeAsignaturasALaQueEsCorrelativa(Asignatura asignatura, List<Integer> listaIdsAsignaturasDelAlumno) throws AsignaturaNotFoundException {
+        List<Asignatura> listaAsignaturasDelAlumno = new ArrayList<>();
+        List<Asignatura> listaAsignaturasCorrelativas = new ArrayList<>();
+
+        //Lleno la lista de asignaturas del alumno
+        for (int asignaturaId : listaIdsAsignaturasDelAlumno) {
+            listaAsignaturasDelAlumno.add(asignaturaDao.findById(asignaturaId));
+        }
+
+        // Recorro la lista de materiasCorrelativas de la asignatura en cuestion y me fijo si coincide el id con la materia de las
+        // asignaturas del alumno. Lo pongo en listaAsignaturaCorrelativas
+
+        for (Asignatura asignaturaCorrelativa : listaAsignaturasDelAlumno) {
+            for (MateriaInfoDto materiaInfoDto : asignaturaCorrelativa.getMateria().getCorrelatividades()) {
+                if (materiaInfoDto.getId() == asignatura.getId()) {
+                    listaAsignaturasCorrelativas.add(asignaturaCorrelativa);
+                }
+            }
+        }
+
+        return listaAsignaturasCorrelativas;
+    }
+
+    @Override
+    public void verificarCorrelativasEstenAprobadas(int asignaturaId, List<Integer> listaIdsAsignaturasDelAlumno) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        Asignatura asignatura = asignaturaDao.findById(asignaturaId);
+        List<Asignatura> listaAsignaturasCorrelativas = new ArrayList<>(getListaDeAsignaturasCorrelativas(asignatura, listaIdsAsignaturasDelAlumno));
+
+        for (Asignatura asignaturaCorrelativa : listaAsignaturasCorrelativas) {
+            if (!asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.APROBADA)) {
+                throw new EstadoIncorrectoException("La asignatura " + asignaturaCorrelativa.getNombreAsignatura() +
+                        " con id: " + asignaturaCorrelativa.getId() + "No esta aprobada");
+            }
+        }
+    }
+
+    @Override
+    public void verificarCorrelativasEstenCursadas(int asignaturaId, List<Integer> listaIdsAsignaturasDelAlumno) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        Asignatura asignatura = asignaturaDao.findById(asignaturaId);
+        List<Asignatura> listaAsignaturasCorrelativas = new ArrayList<>(getListaDeAsignaturasCorrelativas(asignatura, listaIdsAsignaturasDelAlumno));
+
+        for (Asignatura asignaturaCorrelativa : listaAsignaturasCorrelativas) {
+            if (asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.NO_CURSADA)) {
+                throw new EstadoIncorrectoException("La asignatura " + asignaturaCorrelativa.getNombreAsignatura() +
+                        " con id: " + asignaturaCorrelativa.getId() + "No esta cursada");
+            }
+        }
+    }
+
+    @Override
+    public void verificarAsignaturasParaPerderCursada(int asignaturaId, List<Integer> listaIdsAsignaturasDelAlumno) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        Asignatura asignatura = asignaturaDao.findById(asignaturaId);
+        List<Asignatura> listaAsignaturasDeLasQueEsCorrelativa = new ArrayList<>(getListaDeAsignaturasALaQueEsCorrelativa(asignatura, listaIdsAsignaturasDelAlumno));
+
+        if (asignatura.getEstado().equals(EstadoAsignatura.APROBADA))
+            throw new EstadoIncorrectoException("No se puede perder la cursada si la asignatura está aprobada");
+
+        for (Asignatura asignaturaCorrelativa : listaAsignaturasDeLasQueEsCorrelativa){
+            if (asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.CURSADA)){
+                throw new EstadoIncorrectoException("No se puede perder la cursada si la que tiene como correlativa a esta está cursada!");
+            }
+        }
+    }
+
+    @Override
+    public void verificarNotaCorrecta(int nota) {
+        if (nota < 0)
+            throw new IllegalArgumentException("La nota no puede ser un numero negativo");
+        if (nota < 6)
+            throw new IllegalArgumentException("La nota debe ser mayor o igual a 6 para aprobar");
+        if (nota > 10)
+            throw new IllegalArgumentException("La nota debe ser menor o igual a 10 para aprobar");
+    }
 }

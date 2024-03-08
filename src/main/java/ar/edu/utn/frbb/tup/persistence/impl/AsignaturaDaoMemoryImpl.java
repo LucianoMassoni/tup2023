@@ -11,48 +11,43 @@ import java.util.*;
 @Component
 public class AsignaturaDaoMemoryImpl implements AsignaturaDao {
     private static final Map<Integer, Asignatura> repositorioMateria = new HashMap<>();
-
-
     @Override
     public Asignatura save(Asignatura a) {
-        Random random = new Random();
-        a.setId(random.nextInt());
+        Random r = new Random();
+        int random;
+        do {
+            random = r.nextInt();
+            if (random < 0) random *= -1;
+        }while (repositorioMateria.containsKey(random));
+        a.setId(random);
         repositorioMateria.put(a.getId(),a);
 
         return a;
     }
 
     @Override
-    public Asignatura actualizar(Asignatura asignatura) throws AsignaturaNotFoundException {
-        for (Asignatura a: repositorioMateria.values()){
-            if (Objects.equals(a.getId(), asignatura.getId())){
-                repositorioMateria.replace(asignatura.getId(), asignatura);
-                return asignatura;
-            }
-        }
-        throw new AsignaturaNotFoundException("No se encontro una asignatura.");
+    public void actualizar(Asignatura asignatura) throws AsignaturaNotFoundException {
+        if (!repositorioMateria.containsKey(asignatura.getId()))
+            throw new AsignaturaNotFoundException("No se encontro una asignatura.");
+        repositorioMateria.replace(asignatura.getId(), asignatura);
     }
 
+    @Override
+    public Asignatura findById(int id) throws AsignaturaNotFoundException {
+        if (!repositorioMateria.containsKey(id))
+            throw new AsignaturaNotFoundException("No se encontro una asignatura con id: " + id);
+        return repositorioMateria.get(id);
+    }
 
     @Override
     public void delete(int id) throws AsignaturaNotFoundException {
-        Iterator<Map.Entry<Integer, Asignatura>> iterator = repositorioMateria.entrySet().iterator();
-        boolean deleteRelese = false;
-
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, Asignatura> entry = iterator.next();
-            if (Objects.equals(entry.getValue().getId(), id)) {
-                iterator.remove();
-                deleteRelese = true;
-            }
-        }
-
-        if (!deleteRelese) {
-            throw new AsignaturaNotFoundException("No se encontro una asignatura con el id: " + id);
-        }
+        if (!repositorioMateria.containsKey(id))
+            throw new AsignaturaNotFoundException("No se encontro una asignatura con id: " + id);
+        repositorioMateria.remove(id);
     }
 
-    public List<Asignatura> getAllAsignaturas(){
-        return repositorioMateria.values().stream().toList();
+    @Override
+    public Map<Integer, Asignatura> getAllAsignaturas(){
+        return repositorioMateria;
     }
 }

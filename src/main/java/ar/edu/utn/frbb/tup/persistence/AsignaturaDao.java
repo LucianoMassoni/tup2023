@@ -4,16 +4,16 @@ import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AsignaturaDao {
-
     Asignatura save(Asignatura a);
 
-    Asignatura actualizar(Asignatura a) throws AsignaturaNotFoundException;
+    void actualizar(Asignatura a) throws AsignaturaNotFoundException;
 
     void delete(int id) throws AsignaturaNotFoundException;
 
-    List<Asignatura> getAllAsignaturas();
+    Asignatura findById(int id) throws AsignaturaNotFoundException;
 
-
+    Map<Integer, Asignatura> getAllAsignaturas();
 }
