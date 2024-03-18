@@ -17,6 +17,12 @@ public interface AsignaturaService {
     void eliminarAsignatura(int asignaturaId) throws AsignaturaNotFoundException;
     void actualizarAsignatura(Asignatura a) throws AsignaturaNotFoundException;
 
+    void verificarAsignaturaEstaAprobada(int asignaturaId) throws EstadoIncorrectoException, AsignaturaNotFoundException;
+
+    void verificarAsignaturaEstaCursada(int asignaturaId) throws EstadoIncorrectoException, AsignaturaNotFoundException;
+
+    void verificarAsignaturaEstaNoCursada(int asignaturaId) throws EstadoIncorrectoException, AsignaturaNotFoundException;
+
     void verificarCorrelativasEstenAprobadas(int asignaturaId, List<Integer> asignaturasIds) throws AsignaturaNotFoundException, EstadoIncorrectoException;
 
     void verificarCorrelativasEstenCursadas(int asignaturaId, List<Integer> listaIdsAsignaturasDelAlumno) throws AsignaturaNotFoundException, EstadoIncorrectoException;

@@ -5,7 +5,7 @@ import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
 public class AsignaturaDto {
     private int materiaId;
     private EstadoAsignatura estadoAsignatura;
-    private Integer nota;
+    private int nota;
 
     public int getMateriaId() {
         return materiaId;
@@ -23,11 +23,11 @@ public class AsignaturaDto {
         this.estadoAsignatura = estadoAsignatura;
     }
 
-    public Integer getNota() {
+    public int getNota() {
         return nota;
     }
 
-    public void setNota(Integer nota) {
+    public void setNota(int nota) {
         this.nota = nota;
     }
 }

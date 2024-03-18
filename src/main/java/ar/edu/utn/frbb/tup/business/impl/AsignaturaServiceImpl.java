@@ -11,13 +11,14 @@ import ar.edu.utn.frbb.tup.persistence.AsignaturaDao;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
-@Component
+@Service
 public class AsignaturaServiceImpl implements AsignaturaService {
     @Autowired
     private AsignaturaDao asignaturaDao;
@@ -28,7 +29,6 @@ public class AsignaturaServiceImpl implements AsignaturaService {
     public Asignatura crearAsignatura(int materiaId) throws MateriaNotFoundException {
         Materia materia = materiaService.getMateriaById(materiaId);
         Asignatura a = new Asignatura(materia);
-        Random r = new Random();
         asignaturaDao.save(a);
         return a;
     }
@@ -57,13 +57,14 @@ public class AsignaturaServiceImpl implements AsignaturaService {
     private List<Asignatura> getListaDeAsignaturasCorrelativas(Asignatura asignatura, List<Integer> listaIdsAsignaturasDelAlumno) throws AsignaturaNotFoundException {
         List<Asignatura> listaAsignaturasDelAlumno = new ArrayList<>();
         List<Asignatura> listaAsignaturasCorrelativas = new ArrayList<>();
-        ;
+
         //Lleno la lista de asignaturas del alumno
         for (int asignaturaId : listaIdsAsignaturasDelAlumno) {
+            if (asignatura.getId() == asignaturaId) continue;
             listaAsignaturasDelAlumno.add(asignaturaDao.findById(asignaturaId));
         }
 
-        // Recorro la lista de materiasCorrelativas de la asignatura en cuestion y me fijo si coincide el id con la materia de las
+        // Recorro la lista de materiasCorrelativas de la asignatura en cuestión y me fijo si coincide el id con la materia de las
         // asignaturas del alumno. Lo pongo en listaAsignaturaCorrelativa.
         for (MateriaInfoDto materiaCorrelativa : asignatura.getMateria().getCorrelatividades()) {
             for (Asignatura asignaturaDeAlumno : listaAsignaturasDelAlumno) {
@@ -82,21 +83,45 @@ public class AsignaturaServiceImpl implements AsignaturaService {
 
         //Lleno la lista de asignaturas del alumno
         for (int asignaturaId : listaIdsAsignaturasDelAlumno) {
+            if (asignatura.getId() == asignaturaId) continue;
             listaAsignaturasDelAlumno.add(asignaturaDao.findById(asignaturaId));
         }
 
         // Recorro la lista de materiasCorrelativas de la asignatura en cuestion y me fijo si coincide el id con la materia de las
         // asignaturas del alumno. Lo pongo en listaAsignaturaCorrelativas
-
         for (Asignatura asignaturaCorrelativa : listaAsignaturasDelAlumno) {
             for (MateriaInfoDto materiaInfoDto : asignaturaCorrelativa.getMateria().getCorrelatividades()) {
-                if (materiaInfoDto.getId() == asignatura.getId()) {
+                if (materiaInfoDto.getId() == asignatura.getMateria().getMateriaId()) {
                     listaAsignaturasCorrelativas.add(asignaturaCorrelativa);
                 }
             }
         }
 
         return listaAsignaturasCorrelativas;
+    }
+
+    @Override
+    public void verificarAsignaturaEstaAprobada(int asignaturaId) throws EstadoIncorrectoException, AsignaturaNotFoundException {
+        Asignatura asignatura = asignaturaDao.findById(asignaturaId);
+        if (asignatura.getEstado() != EstadoAsignatura.APROBADA){
+            throw new EstadoIncorrectoException("La asignatura " + asignatura.getNombreAsignatura() + " No está APROBADA");
+        }
+    }
+
+    @Override
+    public void verificarAsignaturaEstaCursada(int asignaturaId) throws EstadoIncorrectoException, AsignaturaNotFoundException {
+        Asignatura asignatura = asignaturaDao.findById(asignaturaId);
+        if (asignatura.getEstado() != EstadoAsignatura.CURSADA){
+            throw new EstadoIncorrectoException("La asignatura " + asignatura.getNombreAsignatura() + " No está CURSADA");
+        }
+    }
+
+    @Override
+    public void verificarAsignaturaEstaNoCursada(int asignaturaId) throws EstadoIncorrectoException, AsignaturaNotFoundException {
+        Asignatura asignatura = asignaturaDao.findById(asignaturaId);
+        if (asignatura.getEstado() != EstadoAsignatura.NO_CURSADA){
+            throw new EstadoIncorrectoException("La asignatura " + asignatura.getNombreAsignatura() + " No está NO_CURSADA");
+        }
     }
 
     @Override
@@ -107,7 +132,7 @@ public class AsignaturaServiceImpl implements AsignaturaService {
         for (Asignatura asignaturaCorrelativa : listaAsignaturasCorrelativas) {
             if (!asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.APROBADA)) {
                 throw new EstadoIncorrectoException("La asignatura " + asignaturaCorrelativa.getNombreAsignatura() +
-                        " con id: " + asignaturaCorrelativa.getId() + "No esta aprobada");
+                        " con id: " + asignaturaCorrelativa.getId() + " No está aprobada");
             }
         }
     }
@@ -120,7 +145,7 @@ public class AsignaturaServiceImpl implements AsignaturaService {
         for (Asignatura asignaturaCorrelativa : listaAsignaturasCorrelativas) {
             if (asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.NO_CURSADA)) {
                 throw new EstadoIncorrectoException("La asignatura " + asignaturaCorrelativa.getNombreAsignatura() +
-                        " con id: " + asignaturaCorrelativa.getId() + "No esta cursada");
+                        " con id: " + asignaturaCorrelativa.getId() + " No está cursada");
             }
         }
     }
@@ -134,8 +159,8 @@ public class AsignaturaServiceImpl implements AsignaturaService {
             throw new EstadoIncorrectoException("No se puede perder la cursada si la asignatura está aprobada");
 
         for (Asignatura asignaturaCorrelativa : listaAsignaturasDeLasQueEsCorrelativa){
-            if (asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.CURSADA)){
-                throw new EstadoIncorrectoException("No se puede perder la cursada si la que tiene como correlativa a esta está cursada!");
+            if (!asignaturaCorrelativa.getEstado().equals(EstadoAsignatura.NO_CURSADA)){
+                throw new EstadoIncorrectoException("No se puede perder la cursada si la que tiene como correlativa a esta está cursada o aprobada");
             }
         }
     }
