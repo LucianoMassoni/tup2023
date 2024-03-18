@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
+import ar.edu.utn.frbb.tup.model.dto.AlumnoAsignaturaDto;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
 import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
 import ar.edu.utn.frbb.tup.model.dto.MateriaInfoDto;
@@ -17,11 +18,12 @@ import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class AlumnoServiceImpl implements AlumnoService {
     @Autowired
     private AlumnoDao alumnoDao;
@@ -76,6 +78,25 @@ public class AlumnoServiceImpl implements AlumnoService {
         alumno.setApellido(alumnoDto.getApellido());
         alumno.setDni(alumnoDto.getDni());
         setAsignaturasEnActualizarAlumno(alumno, alumnoDto);
+
+        alumnoDao.actualizar(alumno);
+    }
+
+    @Override
+    public AlumnoAsignaturaDto getAllAsignaturasDeAlumno(int alumnoId) throws AlumnoNotFoundException, AsignaturaNotFoundException {
+        Alumno alumno = alumnoDao.findById(alumnoId);
+        List<Asignatura> listaAsignatuas = new ArrayList<>();
+        for (int asignaturaId : alumno.getAsignaturasIds()){
+            listaAsignatuas.add(asignaturaService.getAsignatura(asignaturaId));
+        }
+        AlumnoAsignaturaDto alumnoAsignaturaDto = new AlumnoAsignaturaDto();
+        alumnoAsignaturaDto.setId(alumno.getId());
+        alumnoAsignaturaDto.setNombre(alumno.getNombre());
+        alumnoAsignaturaDto.setApellido(alumno.getApellido());
+        alumnoAsignaturaDto.setDni(alumno.getDni());
+        alumnoAsignaturaDto.setAsignaturas(listaAsignatuas);
+
+        return alumnoAsignaturaDto;
     }
 
     /*
@@ -124,7 +145,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         if (dni < 0)
             throw new IllegalArgumentException("El dni no puede ser negativo");
         if (dni < 10000000 || dni > 99999999)
-            throw new IllegalArgumentException("El dni debe tener 8 digitos");
+            throw new IllegalArgumentException("El dni debe tener 8 dígitos");
     }
 
     private void validarUnicoDni(int dni){
@@ -147,10 +168,10 @@ public class AlumnoServiceImpl implements AlumnoService {
         ----------------------------------- Funciones de Asignatura desde Alumno ------------------------------------
      */
 
-
-
     @Override
-    public void cambiarEstadoAsignatura(int alumnoId, int asignaturaId, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException {
+    public void cambiarEstadoAsignatura(int alumnoId, int asignaturaId, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException,
+            AsignaturaNotFoundException, EstadoIncorrectoException
+    {
         Alumno alumno = alumnoDao.findById(alumnoId);
 
         verificarExistenciaAsignatura(asignaturaId);
@@ -165,7 +186,9 @@ public class AlumnoServiceImpl implements AlumnoService {
 
 
     private void aprobarAsignatura(Alumno alumno, int asignaturaId, AsignaturaDto asignaturaDto) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        asignaturaService.verificarAsignaturaEstaCursada(asignaturaId);
         asignaturaService.verificarCorrelativasEstenAprobadas(asignaturaId, alumno.getAsignaturasIds());
+
         asignaturaService.verificarNotaCorrecta(asignaturaDto.getNota());
 
         Asignatura asignatura = asignaturaService.getAsignatura(asignaturaId);
@@ -176,6 +199,7 @@ public class AlumnoServiceImpl implements AlumnoService {
     }
 
     private void cursarAsignatura(Alumno alumno, int asignaturaId) throws AsignaturaNotFoundException, EstadoIncorrectoException {
+        asignaturaService.verificarAsignaturaEstaNoCursada(asignaturaId);
         asignaturaService.verificarCorrelativasEstenCursadas(asignaturaId, alumno.getAsignaturasIds());
 
         Asignatura asignatura = asignaturaService.getAsignatura(asignaturaId);

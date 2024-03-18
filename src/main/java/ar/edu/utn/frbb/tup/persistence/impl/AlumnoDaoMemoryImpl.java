@@ -45,12 +45,10 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
 
     @Override
     public void delete(Integer idAlumno) throws AlumnoNotFoundException {
-        for (Alumno a: repositorioAlumnos.values()) {
-            if (a.getId() == idAlumno){
-                repositorioAlumnos.remove(idAlumno);
-            }
+        if (!repositorioAlumnos.containsKey(idAlumno)){
+            throw new AlumnoNotFoundException("No se encontró un alumno con el id: " + idAlumno);
         }
-        throw new AlumnoNotFoundException("No se encontró un alumno con el id: " + idAlumno);
+        repositorioAlumnos.remove(idAlumno);
     }
 
     @Override

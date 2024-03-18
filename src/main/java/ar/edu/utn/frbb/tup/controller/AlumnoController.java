@@ -5,6 +5,7 @@ import ar.edu.utn.frbb.tup.business.AsignaturaService;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
+import ar.edu.utn.frbb.tup.model.dto.AlumnoAsignaturaDto;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
 import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
@@ -35,7 +36,8 @@ public class AlumnoController {
     }
 
     @PutMapping("/{idAlumno}")
-    public void modificarAlumno(@PathVariable int idAlumno, @RequestBody AlumnoDto alumnoDto) throws AlumnoNotFoundException, MateriaNotFoundException, AsignaturaNotFoundException {
+    public void modificarAlumno(@PathVariable int idAlumno, @RequestBody AlumnoDto alumnoDto) throws AlumnoNotFoundException, MateriaNotFoundException,
+            AsignaturaNotFoundException {
         alumnoService.actualizarAlumno(idAlumno, alumnoDto);
     }
 
@@ -45,10 +47,13 @@ public class AlumnoController {
     }
 
     @PutMapping("/{idAlumno}/asignatura/{idAsignatura}")
-    public void cambiarEstadoAsignatura(@PathVariable int idAlumno, @PathVariable int idAsignatura, @RequestBody AsignaturaDto asignaturaDto) throws AsignaturaNotFoundException, AlumnoNotFoundException, EstadoIncorrectoException {
+    public void cambiarEstadoAsignatura(@PathVariable int idAlumno, @PathVariable int idAsignatura, @RequestBody AsignaturaDto asignaturaDto) throws AsignaturaNotFoundException,
+            AlumnoNotFoundException, EstadoIncorrectoException {
          alumnoService.cambiarEstadoAsignatura(idAlumno, idAsignatura, asignaturaDto);
     }
-    //Todo: Creo que no hay forma de ver si se cambió el estado de la asignatura
-    // agregar un get "/{idAlumno}/asignatura/{idAsignatura}". o algo por el estilo???
 
+    @GetMapping("/{idAlumno}/asignaturas")
+    public AlumnoAsignaturaDto getAllAsignaturasDeAlumno(@PathVariable int idAlumno) throws AsignaturaNotFoundException, AlumnoNotFoundException {
+        return alumnoService.getAllAsignaturasDeAlumno(idAlumno);
+    }
 }
