@@ -54,6 +54,4 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     public Map<Integer, Materia> getAllMaterias(){
         return repositorioMateria;
     }
-
-
 }

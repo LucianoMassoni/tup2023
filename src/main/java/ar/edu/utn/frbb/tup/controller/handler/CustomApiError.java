@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomApiError {
     private Integer errorCode;
+    private String errorType;
     private String errorMessage;
 
 
@@ -26,4 +27,8 @@ public class CustomApiError {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    public String getErrorType(){return errorType;}
+
+    public void setErrorType(String errorType) {this.errorType = errorType;}
 }
