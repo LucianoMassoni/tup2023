@@ -52,24 +52,4 @@ public class Asignatura {
     public void setMateria(Materia materia) {
         this.materia = materia;
     }
-
-    /*
-    * Aca terminan los getters y setters y empiezan las funciones que creo que deberian estar en la capa
-    * de servicio.
-    * */
-
-    public void cursarAsignatura(){
-        this.estado = EstadoAsignatura.CURSADA;
-    }
-
-    public void aprobarAsignatura(int nota) throws EstadoIncorrectoException {
-        if (!this.estado.equals(EstadoAsignatura.CURSADA)) {
-            throw new EstadoIncorrectoException("La materia debe estar cursada");
-        }
-        if (nota>=4) {
-            this.estado = EstadoAsignatura.APROBADA;
-            this.nota = nota;
-        }
-    }
-
 }

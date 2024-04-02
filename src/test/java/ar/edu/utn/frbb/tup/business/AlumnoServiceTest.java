@@ -101,7 +101,7 @@ public class AlumnoServiceTest {
         // Ejecutar la función a testear
         IllegalArgumentException exception =  assertThrows(IllegalArgumentException.class, () -> alumnoService.crearAlumno(alumnoDto));
 
-        assertEquals("El dni debe tener 8 digitos", exception.getMessage()); // Se esperan 3 asignaturas
+        assertEquals("El dni debe tener 8 dígitos", exception.getMessage()); // Se esperan 3 asignaturas
     }
 
     @Test
@@ -209,11 +209,11 @@ public class AlumnoServiceTest {
         alumnoDto.setApellido("ApellidoDto");
 
         when(alumnoDao.findById(id)).thenReturn(alumno);
-        doNothing().when(alumnoDao).actualizar(alumno);
+        doNothing().when(alumnoDao).update(alumno);
 
         alumnoService.actualizarAlumno(id, alumnoDto);
 
-        verify(alumnoDao).actualizar(alumno);
+        verify(alumnoDao).update(alumno);
     }
 
     @Test
@@ -264,11 +264,11 @@ public class AlumnoServiceTest {
         when(materiaService.getMateriaById(3)).thenReturn(materia3);
         when(materiaService.getMateriaById(4)).thenReturn(materia4);
         when(alumnoDao.findById(id)).thenReturn(alumno);
-        doNothing().when(alumnoDao).actualizar(alumno);
+        doNothing().when(alumnoDao).update(alumno);
 
         alumnoService.actualizarAlumno(id, alumnoDto);
 
-        verify(alumnoDao).actualizar(alumno);
+        verify(alumnoDao).update(alumno);
         verify(asignaturaService, times(3)).getAsignatura(anyInt());
         verify(asignaturaService, times(1)).crearAsignatura(anyInt());
     }
@@ -289,11 +289,11 @@ public class AlumnoServiceTest {
         alumnoDto.setApellido("ApellidoDto");
 
         when(alumnoDao.findById(id)).thenReturn(alumno);
-        doNothing().when(alumnoDao).actualizar(alumno);
+        doNothing().when(alumnoDao).update(alumno);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> alumnoService.actualizarAlumno(id, alumnoDto));
 
-        assertEquals("El dni debe tener 8 digitos", exception.getMessage());
+        assertEquals("El dni debe tener 8 dígitos", exception.getMessage());
     }
 
     @Test
@@ -322,7 +322,7 @@ public class AlumnoServiceTest {
 
         when(alumnoDao.getAllAlunno()).thenReturn(alumnoMap);
         when(alumnoDao.findById(id)).thenReturn(alumno);
-        doNothing().when(alumnoDao).actualizar(alumno);
+        doNothing().when(alumnoDao).update(alumno);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> alumnoService.actualizarAlumno(id, alumnoDto));
 
@@ -347,7 +347,7 @@ public class AlumnoServiceTest {
 
         when(materiaService.getMateriaById(anyInt())).thenThrow(new MateriaNotFoundException("no se encontro materia con id: 1"));
         when(alumnoDao.findById(id)).thenReturn(alumno);
-        doNothing().when(alumnoDao).actualizar(alumno);
+        doNothing().when(alumnoDao).update(alumno);
 
         MateriaNotFoundException exception = assertThrows(MateriaNotFoundException.class, () -> alumnoService.actualizarAlumno(id, alumnoDto));
 

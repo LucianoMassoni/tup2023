@@ -3,9 +3,7 @@ package ar.edu.utn.frbb.tup.persistence.impl;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.persistence.AlumnoDao;
 import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,12 +33,9 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
 
     @Override
     public Alumno findById(Integer id) throws AlumnoNotFoundException {
-        for (Alumno a: repositorioAlumnos.values()) {
-            if (a.getId() == id){
-                return a;
-            }
-        }
-        throw new AlumnoNotFoundException("No se encontró un alumno con el id: " + id);
+        if (!repositorioAlumnos.containsKey(id))
+            throw new AlumnoNotFoundException("No se encontró un alumno con el id: " + id);
+        return repositorioAlumnos.get(id);
     }
 
     @Override
@@ -52,7 +47,7 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     }
 
     @Override
-    public void actualizar(Alumno alumno) throws AlumnoNotFoundException {
+    public void update(Alumno alumno) throws AlumnoNotFoundException {
         if (!repositorioAlumnos.containsValue(alumno)){
             throw new AlumnoNotFoundException("No existe el alumno");
         }

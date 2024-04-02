@@ -79,7 +79,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         alumno.setDni(alumnoDto.getDni());
         setAsignaturasEnActualizarAlumno(alumno, alumnoDto);
 
-        alumnoDao.actualizar(alumno);
+        alumnoDao.update(alumno);
     }
 
     @Override

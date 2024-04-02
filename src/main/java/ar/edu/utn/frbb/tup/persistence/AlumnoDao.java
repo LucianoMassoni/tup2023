@@ -12,9 +12,9 @@ public interface AlumnoDao {
 
     Alumno findById(Integer id) throws AlumnoNotFoundException;
 
-    void actualizar(Alumno a) throws AlumnoNotFoundException;
-
     void delete(Integer id) throws AlumnoNotFoundException;
+
+    void update(Alumno alumno) throws AlumnoNotFoundException;
 
     Map<Integer, Alumno> getAllAlunno();
 }

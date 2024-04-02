@@ -30,12 +30,12 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     @Override
     public void delete(int materiaId) throws MateriaNotFoundException {
         if (!repositorioMateria.containsKey(materiaId))
-            throw new MateriaNotFoundException("No se encontro la materia");
+            throw new MateriaNotFoundException("No se encontró la materia con id: " + materiaId);
         repositorioMateria.remove(materiaId);
     }
 
     @Override
-    public void modificar(Materia materia) throws MateriaNotFoundException {
+    public void update(Materia materia) throws MateriaNotFoundException {
         if (!repositorioMateria.containsValue(materia))
             throw new MateriaNotFoundException("No se encontro la materia");
         repositorioMateria.replace(materia.getMateriaId(), materia);

@@ -34,12 +34,12 @@ public class CarreraServiceImpl implements CarreraService {
 
     @Override
     public Carrera buscarCarrera(int carreraId) throws CarreraNotFoundException {
-        return carreraDao.load(carreraId);
+        return carreraDao.findById(carreraId);
     }
 
     @Override
     public void actualizarCarrera(int id, CarreraDto carreraDto) throws CarreraNotFoundException {
-        Carrera c = carreraDao.load(id);
+        Carrera c = carreraDao.findById(id);
 
         validarDepartamento(carreraDto);
         validarCuatrimestres(carreraDto);
@@ -50,7 +50,7 @@ public class CarreraServiceImpl implements CarreraService {
 
         validarNombreUnicoEnCarreras(c);
 
-        carreraDao.actualizar(id, c);
+        carreraDao.update(c);
     }
 
     @Override
@@ -97,22 +97,22 @@ public class CarreraServiceImpl implements CarreraService {
     // --------------------------------- Funciones de las materias en al carrera ---------------------------------
     @Override
     public void agregarMateriaEnCarrera(int carreraId, int materiaId) throws CarreraNotFoundException {
-        Carrera carrera = carreraDao.load(carreraId);
+        Carrera carrera = carreraDao.findById(carreraId);
 
         validarExistenciaMateriaParaAgregar(carrera, materiaId);
 
         carrera.agregarMateria(materiaId);
-        carreraDao.actualizar(carreraId, carrera);
+        carreraDao.update(carrera);
     }
 
     @Override
     public void eliminarMateriaEnCarrera(int carreraId, int materiaId) throws CarreraNotFoundException{
-        Carrera carrera = carreraDao.load(carreraId);
+        Carrera carrera = carreraDao.findById(carreraId);
 
         validarExistenciaMateriaParaEliminar(carrera, materiaId);
 
         carrera.getMateriasIds().remove(Integer.valueOf(materiaId));
-        carreraDao.actualizar(carreraId, carrera);
+        carreraDao.update(carrera);
     }
 
     @Override
@@ -123,17 +123,17 @@ public class CarreraServiceImpl implements CarreraService {
             for (Carrera carrera : carreras){
                 if (!carrera.getMateriasIds().isEmpty()){
                     carrera.getMateriasIds().clear();
-                    carreraDao.actualizar(carrera.getCarreraId(), carrera);
+                    carreraDao.update(carrera);
                 }
             }
         } else {
             for (Carrera carrera : carreras){
                 if (listaCarreraIds.contains(carrera.getCarreraId()) && !carrera.getMateriasIds().contains(materiaId)){
                     carrera.getMateriasIds().add(materiaId);
-                    carreraDao.actualizar(carrera.getCarreraId(), carrera);
+                    carreraDao.update(carrera);
                 } else if (!listaCarreraIds.contains(carrera.getCarreraId()) && carrera.getMateriasIds().contains(materiaId)) {
                     carrera.getMateriasIds().remove(Integer.valueOf(materiaId));
-                    carreraDao.actualizar(carrera.getCarreraId(), carrera);
+                    carreraDao.update(carrera);
                 }
             }
         }

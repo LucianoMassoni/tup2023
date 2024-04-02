@@ -13,6 +13,6 @@ public interface MateriaDao {
 
     void delete(int idMateria) throws MateriaNotFoundException;
 
-    void modificar(Materia materia) throws MateriaNotFoundException;
+    void update(Materia materia) throws MateriaNotFoundException;
 
 }

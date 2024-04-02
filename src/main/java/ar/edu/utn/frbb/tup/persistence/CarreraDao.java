@@ -7,8 +7,8 @@ import java.util.Map;
 
 public interface CarreraDao {
     Carrera save(Carrera carrera);
-    Carrera load(int carreraId) throws CarreraNotFoundException;
-    void actualizar(int id, Carrera carrera);
+    Carrera findById(int carreraId) throws CarreraNotFoundException;
+    void update(Carrera carrera);
     void delete(int carreraId) throws CarreraNotFoundException;
     Map<Integer, Carrera> getAll();
 

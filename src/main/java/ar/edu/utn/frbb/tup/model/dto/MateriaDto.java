@@ -2,6 +2,7 @@ package ar.edu.utn.frbb.tup.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MateriaDto {
     private String nombre;
@@ -60,5 +61,24 @@ public class MateriaDto {
 
     public void agregarCorrelativaId(int id){
         this.correlativasIds.add(id);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MateriaDto that = (MateriaDto) o;
+        return anio == that.anio &&
+                cuatrimestre == that.cuatrimestre &&
+                profesorId == that.profesorId &&
+                Objects.equals(nombre, that.nombre) &&
+                Objects.equals(carreraIds, that.carreraIds) &&
+                Objects.equals(correlativasIds, that.correlativasIds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, anio, cuatrimestre, profesorId, carreraIds, correlativasIds);
     }
 }

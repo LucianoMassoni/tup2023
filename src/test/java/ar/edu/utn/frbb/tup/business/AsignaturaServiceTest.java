@@ -176,7 +176,7 @@ public class AsignaturaServiceTest {
         // Verificación de llamadas al DAO
         verify(asignaturaDao, times(3)).findById(anyInt());
         assertEquals("La asignatura " + asignatura3.getNombreAsignatura() +
-                " con id: " + asignatura3.getId() + " No esta aprobada", exception.getMessage());
+                " con id: " + asignatura3.getId() + " No está aprobada", exception.getMessage());
     }
 
     @Test
@@ -220,7 +220,7 @@ public class AsignaturaServiceTest {
         // Verificación de llamadas al DAO
         verify(asignaturaDao, times(3)).findById(anyInt());
         assertEquals("La asignatura " + asignatura3.getNombreAsignatura() +
-                " con id: " + asignatura3.getId() + " No esta aprobada", exception.getMessage());
+                " con id: " + asignatura3.getId() + " No está aprobada", exception.getMessage());
     }
 
     @Test
@@ -305,7 +305,7 @@ public class AsignaturaServiceTest {
         // Verificación de llamadas al DAO
         verify(asignaturaDao, times(3)).findById(anyInt());
         assertEquals("La asignatura " + asignatura3.getNombreAsignatura() +
-                " con id: " + asignatura3.getId() + " No esta cursada", exception.getMessage());
+                " con id: " + asignatura3.getId() + " No está cursada", exception.getMessage());
     }
 
     @Test
@@ -544,7 +544,7 @@ public class AsignaturaServiceTest {
 
         EstadoIncorrectoException exception = assertThrows(EstadoIncorrectoException.class, () -> asignaturaService.verificarAsignaturaEstaAprobada(id));
 
-        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No esta APROBADA", exception.getMessage());
+        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No está APROBADA", exception.getMessage());
     }
 
     @Test
@@ -563,7 +563,7 @@ public class AsignaturaServiceTest {
 
         EstadoIncorrectoException exception = assertThrows(EstadoIncorrectoException.class, () -> asignaturaService.verificarAsignaturaEstaAprobada(id));
 
-        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No esta APROBADA", exception.getMessage());
+        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No está APROBADA", exception.getMessage());
     }
 
     @Test
@@ -595,7 +595,7 @@ public class AsignaturaServiceTest {
 
         EstadoIncorrectoException exception = assertThrows(EstadoIncorrectoException.class, () -> asignaturaService.verificarAsignaturaEstaCursada(id));
 
-        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No esta CURSADA", exception.getMessage());
+        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No está CURSADA", exception.getMessage());
     }
 
     @Test
@@ -614,7 +614,7 @@ public class AsignaturaServiceTest {
 
         EstadoIncorrectoException exception = assertThrows(EstadoIncorrectoException.class, () -> asignaturaService.verificarAsignaturaEstaCursada(id));
 
-        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No esta CURSADA", exception.getMessage());
+        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No está CURSADA", exception.getMessage());
     }
 
     @Test
@@ -646,7 +646,7 @@ public class AsignaturaServiceTest {
 
         EstadoIncorrectoException exception = assertThrows(EstadoIncorrectoException.class, () -> asignaturaService.verificarAsignaturaEstaNoCursada(id));
 
-        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No esta NO_CURSADA", exception.getMessage());
+        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No está NO_CURSADA", exception.getMessage());
     }
 
     @Test
@@ -665,6 +665,6 @@ public class AsignaturaServiceTest {
 
         EstadoIncorrectoException exception = assertThrows(EstadoIncorrectoException.class, () -> asignaturaService.verificarAsignaturaEstaNoCursada(id));
 
-        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No esta NO_CURSADA", exception.getMessage());
+        assertEquals("La asignatura " + asignatura.getNombreAsignatura() + " No está NO_CURSADA", exception.getMessage());
     }
 }

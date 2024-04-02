@@ -107,7 +107,7 @@ public class MateriaServiceImpl implements MateriaService {
         validarNombreUnicoEnModificarMateria(materia);
 
         //Guardar lo modificado
-        dao.modificar(materia);
+        dao.update(materia);
         carreraService.actualizarMateriaEnCarrera(materia.getCarreraIds(), materiaId);
     }
 

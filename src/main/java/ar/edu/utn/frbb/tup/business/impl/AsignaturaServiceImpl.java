@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class AsignaturaServiceImpl implements AsignaturaService {
@@ -49,7 +47,7 @@ public class AsignaturaServiceImpl implements AsignaturaService {
 
     @Override
     public void actualizarAsignatura(Asignatura a) throws AsignaturaNotFoundException {
-        asignaturaDao.actualizar(a);
+        asignaturaDao.update(a);
     }
 
     //----------------------------------------------------------------------------------------------------------------

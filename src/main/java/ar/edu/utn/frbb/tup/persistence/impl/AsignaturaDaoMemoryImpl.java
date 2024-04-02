@@ -11,6 +11,7 @@ import java.util.*;
 @Component
 public class AsignaturaDaoMemoryImpl implements AsignaturaDao {
     private static final Map<Integer, Asignatura> repositorioMateria = new HashMap<>();
+
     @Override
     public Asignatura save(Asignatura a) {
         Random r = new Random();
@@ -26,23 +27,23 @@ public class AsignaturaDaoMemoryImpl implements AsignaturaDao {
     }
 
     @Override
-    public void actualizar(Asignatura asignatura) throws AsignaturaNotFoundException {
+    public void update(Asignatura asignatura) throws AsignaturaNotFoundException {
         if (!repositorioMateria.containsKey(asignatura.getId()))
-            throw new AsignaturaNotFoundException("No se encontro una asignatura.");
+            throw new AsignaturaNotFoundException("No se encontró una asignatura.");
         repositorioMateria.replace(asignatura.getId(), asignatura);
     }
 
     @Override
     public Asignatura findById(int id) throws AsignaturaNotFoundException {
         if (!repositorioMateria.containsKey(id))
-            throw new AsignaturaNotFoundException("No se encontro una asignatura con id: " + id);
+            throw new AsignaturaNotFoundException("No se encontró una asignatura con id: " + id);
         return repositorioMateria.get(id);
     }
 
     @Override
     public void delete(int id) throws AsignaturaNotFoundException {
         if (!repositorioMateria.containsKey(id))
-            throw new AsignaturaNotFoundException("No se encontro una asignatura con id: " + id);
+            throw new AsignaturaNotFoundException("No se encontró una asignatura con id: " + id);
         repositorioMateria.remove(id);
     }
 

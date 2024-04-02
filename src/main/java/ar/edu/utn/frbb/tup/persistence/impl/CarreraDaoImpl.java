@@ -30,17 +30,14 @@ public class CarreraDaoImpl implements CarreraDao {
     }
 
     @Override
-    public Carrera load(int carreraId) throws CarreraNotFoundException {
-        for (Carrera c:repositorioCarrera.values()){
-            if (Objects.equals(c.getCarreraId(), carreraId)){
-                return c;
-            }
-        }
-        throw new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId);
+    public Carrera findById(int carreraId) throws CarreraNotFoundException {
+        if(!repositorioCarrera.containsKey(carreraId))
+            throw new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId);
+        return repositorioCarrera.get(carreraId);
     }
 
     @Override
-    public void actualizar(int id, Carrera carrera){
+    public void update(Carrera carrera){
         repositorioCarrera.replace(carrera.getCarreraId(), carrera);
     }
 

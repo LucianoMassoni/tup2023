@@ -116,7 +116,7 @@ public class CarreraServiceTest {
         carrera.setCantidadCuatrimestres(0);
 
         //config del mock
-        when(carreraDao.load(1)).thenReturn(carrera);
+        when(carreraDao.findById(1)).thenReturn(carrera);
 
         //metodo a probar
         Carrera resultado = carreraService.buscarCarrera(1);
@@ -130,7 +130,7 @@ public class CarreraServiceTest {
     public void testBuscarCarreraInexistente() throws CarreraNotFoundException {
         int carreraId = 1;
         //config del mock
-        when(carreraDao.load(carreraId)).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId));
+        when(carreraDao.findById(carreraId)).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId));
 
         //metodo a probar
         CarreraNotFoundException exception = assertThrows(CarreraNotFoundException.class, () -> carreraService.buscarCarrera(carreraId));
@@ -143,7 +143,7 @@ public class CarreraServiceTest {
     public void testActualizarCarrera() throws CarreraNotFoundException {
         int carreraId = 1;
         Carrera carrera = new Carrera("TUP",carreraId,2,4);
-        when(carreraDao.load(carreraId)).thenReturn(carrera);
+        when(carreraDao.findById(carreraId)).thenReturn(carrera);
 
         CarreraDto carreraDto = new CarreraDto();
         carreraDto.setNombre("Matematica");
@@ -163,7 +163,7 @@ public class CarreraServiceTest {
         Map<Integer, Carrera> carreraMap = new HashMap<>();
         carreraMap.put(carreraExistente.getCarreraId(), carreraExistente);
 
-        when(carreraDao.load(carreraId)).thenReturn(carrera);
+        when(carreraDao.findById(carreraId)).thenReturn(carrera);
         when(carreraDao.getAll()).thenReturn(carreraMap);
 
         CarreraDto carreraDto = new CarreraDto();
@@ -179,7 +179,7 @@ public class CarreraServiceTest {
     public void testActualizarCarreraCuatrimestreInvalido() throws CarreraNotFoundException {
         int carreraId = 1;
         Carrera carrera = new Carrera("TUP",carreraId,2,4);
-        when(carreraDao.load(carreraId)).thenReturn(carrera);
+        when(carreraDao.findById(carreraId)).thenReturn(carrera);
 
         CarreraDto carreraDto = new CarreraDto();
         carreraDto.setNombre("Matematica");
@@ -194,7 +194,7 @@ public class CarreraServiceTest {
     public void testActualizarCarreraDepartamentoInvalido() throws CarreraNotFoundException {
         int carreraId = 1;
         Carrera carrera = new Carrera("TUP",carreraId,2,4);
-        when(carreraDao.load(carreraId)).thenReturn(carrera);
+        when(carreraDao.findById(carreraId)).thenReturn(carrera);
 
         CarreraDto carreraDto = new CarreraDto();
         carreraDto.setNombre("Matematica");
@@ -238,7 +238,7 @@ public class CarreraServiceTest {
         int materiaId = 1;
         Carrera carrera = new Carrera("TUP",carreraId, 2, 4);
 
-        when(carreraDao.load(carreraId)).thenReturn(carrera);
+        when(carreraDao.findById(carreraId)).thenReturn(carrera);
 
         assertTrue(carrera.getMateriasIds().isEmpty());
 
@@ -252,7 +252,7 @@ public class CarreraServiceTest {
         int carreraId = 1;
         int materiaId = 1;
 
-        when(carreraDao.load(carreraId)).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId));
+        when(carreraDao.findById(carreraId)).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId));
 
         CarreraNotFoundException exception = assertThrows(CarreraNotFoundException.class, () -> carreraService.agregarMateriaEnCarrera(carreraId, materiaId));
 
@@ -266,7 +266,7 @@ public class CarreraServiceTest {
         Carrera carrera = new Carrera("TUP",carreraId, 2, 4);
         carrera.agregarMateria(materiaId);
 
-        when(carreraDao.load(carreraId)).thenReturn(carrera);
+        when(carreraDao.findById(carreraId)).thenReturn(carrera);
 
         carreraService.eliminarMateriaEnCarrera(carreraId, materiaId);
 
@@ -279,7 +279,7 @@ public class CarreraServiceTest {
         int carreraId = 1;
         int materiaId = 1;
 
-        when(carreraDao.load(carreraId)).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId));
+        when(carreraDao.findById(carreraId)).thenThrow(new CarreraNotFoundException("No se encontró una carrera con el id: " + carreraId));
 
         CarreraNotFoundException exception = assertThrows(CarreraNotFoundException.class, () -> carreraService.eliminarMateriaEnCarrera(carreraId, materiaId));
 
@@ -292,7 +292,7 @@ public class CarreraServiceTest {
         int materiaId = 1;
         Carrera carrera = new Carrera("TUP",carreraId, 2, 4);
 
-        when(carreraDao.load(carreraId)).thenReturn(carrera);
+        when(carreraDao.findById(carreraId)).thenReturn(carrera);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> carreraService.eliminarMateriaEnCarrera(carreraId, materiaId));
 
