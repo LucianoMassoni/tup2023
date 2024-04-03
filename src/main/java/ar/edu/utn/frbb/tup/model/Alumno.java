@@ -5,6 +5,7 @@ import ar.edu.utn.frbb.tup.model.exception.CorrelatividadException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Alumno {
     private int id;
@@ -67,4 +68,13 @@ public class Alumno {
         return this.asignaturasIds;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Alumno alumno = (Alumno) o;
+        return dni == alumno.dni &&
+                Objects.equals(nombre, alumno.nombre) &&
+                Objects.equals(apellido, alumno.apellido);
+    }
 }
