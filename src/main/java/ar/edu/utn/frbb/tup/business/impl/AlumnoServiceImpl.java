@@ -69,11 +69,12 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     @Override
     public void actualizarAlumno(int alumnoId, AlumnoDto alumnoDto) throws AlumnoNotFoundException, MateriaNotFoundException, AsignaturaNotFoundException {
+        Alumno alumno = alumnoDao.findById(alumnoId);
+
         validarCorrectoDni(alumnoDto.getDni());
         validarUnicoDniEnActualizar(alumnoId, alumnoDto.getDni());
         validarExistenciaDeMateriasIds(alumnoDto.getIdMateriasDeAsignatura());
 
-        Alumno alumno = alumnoDao.findById(alumnoId);
         alumno.setNombre(alumno.getNombre());
         alumno.setApellido(alumnoDto.getApellido());
         alumno.setDni(alumnoDto.getDni());
@@ -85,16 +86,16 @@ public class AlumnoServiceImpl implements AlumnoService {
     @Override
     public AlumnoAsignaturaDto getAllAsignaturasDeAlumno(int alumnoId) throws AlumnoNotFoundException, AsignaturaNotFoundException {
         Alumno alumno = alumnoDao.findById(alumnoId);
-        List<Asignatura> listaAsignatuas = new ArrayList<>();
+        List<Asignatura> listaAsignaturas = new ArrayList<>();
         for (int asignaturaId : alumno.getAsignaturasIds()){
-            listaAsignatuas.add(asignaturaService.getAsignatura(asignaturaId));
+            listaAsignaturas.add(asignaturaService.getAsignatura(asignaturaId));
         }
         AlumnoAsignaturaDto alumnoAsignaturaDto = new AlumnoAsignaturaDto();
         alumnoAsignaturaDto.setId(alumno.getId());
         alumnoAsignaturaDto.setNombre(alumno.getNombre());
         alumnoAsignaturaDto.setApellido(alumno.getApellido());
         alumnoAsignaturaDto.setDni(alumno.getDni());
-        alumnoAsignaturaDto.setAsignaturas(listaAsignatuas);
+        alumnoAsignaturaDto.setAsignaturas(listaAsignaturas);
 
         return alumnoAsignaturaDto;
     }
@@ -170,11 +171,11 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     @Override
     public void cambiarEstadoAsignatura(int alumnoId, int asignaturaId, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException,
-            AsignaturaNotFoundException, EstadoIncorrectoException
-    {
+            AsignaturaNotFoundException, EstadoIncorrectoException, MateriaNotFoundException {
         Alumno alumno = alumnoDao.findById(alumnoId);
 
         verificarExistenciaAsignatura(asignaturaId);
+        verificarExistenciaMateria(asignaturaDto);
         verificarAsignaturaCorrespondeAAlumno(asignaturaId, alumno);
 
         switch (asignaturaDto.getEstadoAsignatura()) {
@@ -219,6 +220,10 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     private void verificarExistenciaAsignatura(int asignaturaId) throws AsignaturaNotFoundException {
         asignaturaService.getAsignatura(asignaturaId);
+    }
+
+    private void verificarExistenciaMateria(AsignaturaDto asignaturaDto) throws MateriaNotFoundException {
+        materiaService.getMateriaById(asignaturaDto.getMateriaId());
     }
 
     private void verificarAsignaturaCorrespondeAAlumno(int asignaturaId, Alumno alumno) throws AsignaturaNotFoundException {

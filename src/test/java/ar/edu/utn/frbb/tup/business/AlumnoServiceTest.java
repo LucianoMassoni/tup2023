@@ -414,7 +414,7 @@ public class AlumnoServiceTest {
     }
 
     @Test
-    public void cambiarEstadoAsignaturaAAprobadaTest() throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException {
+    public void cambiarEstadoAsignaturaAAprobadaTest() throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException, MateriaNotFoundException {
         int idAlumno = 1;
         int idAsignatura = 1;
 
@@ -586,7 +586,7 @@ public class AlumnoServiceTest {
      */
 
     @Test
-    public void cambiarEstadoAsignaturaACursadoTest() throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException {
+    public void cambiarEstadoAsignaturaACursadoTest() throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException, MateriaNotFoundException {
         int idAlumno = 1;
         int idAsignatura = 1;
 
@@ -624,7 +624,7 @@ public class AlumnoServiceTest {
     }
 
     @Test
-    public void cambiarEstadoAsignaturaPerderCursadaTest() throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException {
+    public void cambiarEstadoAsignaturaPerderCursadaTest() throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException, MateriaNotFoundException {
         int idAlumno = 1;
         int idAsignatura = 1;
 

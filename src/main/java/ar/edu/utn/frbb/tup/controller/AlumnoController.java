@@ -48,7 +48,7 @@ public class AlumnoController {
 
     @PutMapping("/{idAlumno}/asignatura/{idAsignatura}")
     public void cambiarEstadoAsignatura(@PathVariable int idAlumno, @PathVariable int idAsignatura, @RequestBody AsignaturaDto asignaturaDto) throws AsignaturaNotFoundException,
-            AlumnoNotFoundException, EstadoIncorrectoException {
+            AlumnoNotFoundException, EstadoIncorrectoException, MateriaNotFoundException {
          alumnoService.cambiarEstadoAsignatura(idAlumno, idAsignatura, asignaturaDto);
     }
 

@@ -18,6 +18,6 @@ public interface AlumnoService {
 
     void actualizarAlumno(int alumnoId, AlumnoDto alumnoDto) throws AlumnoNotFoundException, MateriaNotFoundException, AsignaturaNotFoundException;
 
-    void cambiarEstadoAsignatura(int idAlumno, int idAsignatura, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException;
+    void cambiarEstadoAsignatura(int idAlumno, int idAsignatura, AsignaturaDto asignaturaDto) throws AlumnoNotFoundException, AsignaturaNotFoundException, EstadoIncorrectoException, MateriaNotFoundException;
     AlumnoAsignaturaDto getAllAsignaturasDeAlumno(int alumnoId) throws AlumnoNotFoundException, AsignaturaNotFoundException;
 }

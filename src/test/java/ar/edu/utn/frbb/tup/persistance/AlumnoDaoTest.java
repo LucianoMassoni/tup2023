@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +18,7 @@ import java.util.List;
 public class AlumnoDaoTest {
     @InjectMocks
     private AlumnoDaoMemoryImpl dao;
+
 
     @Test
     public void SaveTest(){
@@ -68,9 +70,9 @@ public class AlumnoDaoTest {
     @Test
     public void deleteTest() throws AlumnoNotFoundException {
         Alumno alumno = new Alumno();
-        alumno.setNombre("Nombre");
-        alumno.setApellido("Apellido");
-        alumno.setDni(12345678);
+        alumno.setNombre("asdf");
+        alumno.setApellido("asdf");
+        alumno.setDni(43215678);
         alumno.setAsignaturasIds(List.of(1,2));
 
         dao.save(alumno);
