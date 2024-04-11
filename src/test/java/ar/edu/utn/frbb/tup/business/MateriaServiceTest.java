@@ -418,7 +418,7 @@ public class MateriaServiceTest {
         MateriaDto materiaDto = new MateriaDto();
         materiaDto.setNombre("Programacion 4");
         materiaDto.setAnio(2);
-        materiaDto.setCuatrimestre(2);
+        materiaDto.setCuatrimestre(4);
         materiaDto.setProfesorId(12);
         materiaDto.setCarreraIds(List.of(carreraId));
 
@@ -429,7 +429,7 @@ public class MateriaServiceTest {
         //asserts
         assertEquals("Programacion 4", materia.getNombre());
         assertEquals(2, materia.getAnio());
-        assertEquals(2, materia.getCuatrimestre());
+        assertEquals(4, materia.getCuatrimestre());
         assertEquals(profesor, materia.getProfesor());
         assertTrue(materia.getCarreraIds().contains(carreraId));
     }
@@ -459,7 +459,7 @@ public class MateriaServiceTest {
         MateriaDto materiaDto = new MateriaDto();
         materiaDto.setNombre("Programacion 4");
         materiaDto.setAnio(2);
-        materiaDto.setCuatrimestre(2);
+        materiaDto.setCuatrimestre(4);
         materiaDto.setProfesorId(12);
 
 
@@ -469,7 +469,7 @@ public class MateriaServiceTest {
         //asserts
         assertEquals("Programacion 4", materia.getNombre());
         assertEquals(2, materia.getAnio());
-        assertEquals(2, materia.getCuatrimestre());
+        assertEquals(4, materia.getCuatrimestre());
         assertEquals(profesor, materia.getProfesor());
         assertTrue(materia.getCarreraIds().isEmpty());
     }
@@ -559,7 +559,7 @@ public class MateriaServiceTest {
         MateriaDto materiaDto = new MateriaDto();
         materiaDto.setNombre("Programacion 4");
         materiaDto.setAnio(2);
-        materiaDto.setCuatrimestre(2);
+        materiaDto.setCuatrimestre(4);
         materiaDto.setProfesorId(12);
         materiaDto.setCorrelativasIds(List.of(1,2));
 
@@ -569,7 +569,7 @@ public class MateriaServiceTest {
         //asserts
         assertEquals("Programacion 4", materia.getNombre());
         assertEquals(2, materia.getAnio());
-        assertEquals(2, materia.getCuatrimestre());
+        assertEquals(4, materia.getCuatrimestre());
         assertEquals(profesor, materia.getProfesor());
         assertEquals(2, materia.getCorrelatividades().size());
         assertTrue(materia.getCorrelatividades().contains(mCorrelativaInfo1));
@@ -612,7 +612,7 @@ public class MateriaServiceTest {
         MateriaDto materiaDto = new MateriaDto();
         materiaDto.setNombre("Programacion 1");
         materiaDto.setAnio(2);
-        materiaDto.setCuatrimestre(2);
+        materiaDto.setCuatrimestre(3);
         materiaDto.setProfesorId(12);
 
         //metodo a probar

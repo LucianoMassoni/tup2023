@@ -179,13 +179,13 @@ public class MateriaControllerTest {
     public void getMateriaByIdBadRequestTest() throws Exception {
         int id = 1;
 
-        when(materiaService.getMateriaById(id)).thenThrow(new MateriaNotFoundException("No se encotro la materia con id: " + id));
+        when(materiaService.getMateriaById(id)).thenThrow(new MateriaNotFoundException("No se encontró la materia con id: " + id));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/materia/{idMateria}",id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         jsonPath("$.errorType").value("MateriaNotFoundException"),
-                        jsonPath("$.errorMessage").value("No se encotro la materia con id: 1")
+                        jsonPath("$.errorMessage").value("No se encontró la materia con id: 1")
                 )
                 .andExpect(status().is4xxClientError());
     }
@@ -200,7 +200,7 @@ public class MateriaControllerTest {
 
         when(materiaService.getMateriaByName(nombre)).thenReturn(lista);
 
-        MvcResult result = mockMvc.perform(get("/materia").param("nombre", nombre)
+        MvcResult result = mockMvc.perform(get("/materia/materias").param("nombre", nombre)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
@@ -216,7 +216,7 @@ public class MateriaControllerTest {
         doThrow(new MateriaNotFoundException("La materia invalido no existe")).when(materiaService).getMateriaByName(anyString());
 
         // Ejecutar la solicitud GET al endpoint del controlador
-        mockMvc.perform(MockMvcRequestBuilders.get("/materia?nombre=invalido")
+        mockMvc.perform(MockMvcRequestBuilders.get("/materia/materias?nombre=invalido")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         jsonPath("$.errorType").value("MateriaNotFoundException"),

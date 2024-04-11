@@ -36,17 +36,12 @@ public class MateriaServiceImpl implements MateriaService {
         return materiaInfoDto;
     }
 
-    /*
-     * Para la creación de la materia entiendo que el año y los cuatrimestres son independientes, es decir,
-     * el año en el que se cursa con respecto a la carrera y el cuatrimestre en que se cursa con respecto a la carrera.
-     */
-
     @Override
     public Materia crearMateria(MateriaDto materiaDto) throws IllegalArgumentException, CarreraNotFoundException, MateriaNotFoundException {
-
         validarNombreUnico(materiaDto);
         validarExistenciaDeCarrera(materiaDto);
         validarCoincidenciaCuatrimestresYAnosDeCarrera(materiaDto);
+        validarCantidadCuatrimestres(materiaDto);
         validarAnioCorrelativasMenorActual(materiaDto);
         validarCuatrimestreCorrelativaMenorActual(materiaDto);
 
@@ -94,8 +89,9 @@ public class MateriaServiceImpl implements MateriaService {
         validarCoincidenciaCuatrimestresYAnosDeCarrera(materiaDto);
         validarAnioCorrelativasMenorActual(materiaDto);
         validarCuatrimestreCorrelativaMenorActual(materiaDto);
+        validarCantidadCuatrimestres(materiaDto);
 
-        // le asigna los valores entrantes de la  materiaDto a la materia
+        // le asigna los valores entrantes de la materiaDto a la materia
         materia.setNombre(materiaDto.getNombre());
         materia.setAnio(materiaDto.getAnio());
         materia.setCuatrimestre(materiaDto.getCuatrimestre());
@@ -228,6 +224,15 @@ public class MateriaServiceImpl implements MateriaService {
                     throw new IllegalArgumentException("La carrera " + carrera.getNombre() +" tiene " + annosDeCarrera + " años.");
                 }
             }
+        }
+    }
+
+    private void validarCantidadCuatrimestres(MateriaDto materiaDto) throws CarreraNotFoundException {
+        int anno = materiaDto.getAnio();
+        int cuatrimestre = materiaDto.getCuatrimestre();
+
+        if (cuatrimestre < anno * 2 - 1 || cuatrimestre > anno * 2){
+            throw new IllegalArgumentException("No coincide el cuatrimestre con el año de la materia");
         }
     }
 
