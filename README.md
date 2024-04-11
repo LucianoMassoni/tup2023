@@ -53,6 +53,12 @@ _**Alumno**_
 
 <hr/>
 
+**Documentación en postman:**
+
+[Postman](https://documenter.getpostman.com/view/29939805/2sA3BheEpq)
+
+<hr/>
+
 **Diagramas UML:**
 
 ![final](https://github.com/LucianoMassoni/tup2023/assets/112901637/e0d72713-82da-4cfc-bff1-b2e28c8c6c71)
